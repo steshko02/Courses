@@ -1,0 +1,17 @@
+version: '3.6'
+
+services:
+  db:
+    image: 'postgres:13.1-alpine'
+    ports:
+      - "5435:5432"
+    container_name: db-lab
+    environment:
+      - POSTGRES_DB=labDB
+      - POSTGRES_USER=${DB_USER:-user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-123}
+    volumes:
+      - shared_volume:/home/app/db
+
+volumes:
+  shared_volume:
