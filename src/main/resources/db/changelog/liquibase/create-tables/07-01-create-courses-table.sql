@@ -4,5 +4,7 @@ CREATE TABLE courses (
     description varchar(1024),
     status smallint NOT NULL,
     size smallint,
-    type smallint NOT NULL
+    type smallint NOT NULL,
+    date_start TIMESTAMP(14) NOT NULL,
+    date_end TIMESTAMP(14) NOT NULL
 );

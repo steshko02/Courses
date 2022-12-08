@@ -4,6 +4,5 @@ CREATE TABLE profiles (
     department varchar(50),
     jobTitle varchar(50),
     other varchar(128),
-    githubUrl varchar(128),
-    foreign key (credId) references credantionals(id)
+    githubUrl varchar(128)
 );
