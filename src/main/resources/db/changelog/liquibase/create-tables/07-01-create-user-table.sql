@@ -3,7 +3,7 @@ CREATE TABLE users (
     firstname varchar(50) NOT NULL,
     lastname varchar(50) NOT NULL,
     credId BIGSERIAL NOT NULL unique,
-    foreign key (credId) references credantionals(id),
+    foreign key (credId) references credentials(id),
     profileId BIGSERIAL unique,
     foreign key (profileId) references profiles(id)
 );

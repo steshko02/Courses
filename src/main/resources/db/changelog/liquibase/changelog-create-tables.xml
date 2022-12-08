@@ -6,7 +6,7 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd"
         logicalFilePath="db/changelog/liquibase">
 
-    <include file="create-tables/07-01-create-credentionals-table.sql" relativeToChangelogFile="true"/>
+    <include file="create-tables/07-01-create-credentials-table.sql" relativeToChangelogFile="true"/>
     <include file="create-tables/07-01-create-profiles-table.sql" relativeToChangelogFile="true"/>
     <include file="create-tables/07-01-create-user-table.sql" relativeToChangelogFile="true"/>
     <include file="create-tables/07-01-create-role-table.sql" relativeToChangelogFile="true"/>

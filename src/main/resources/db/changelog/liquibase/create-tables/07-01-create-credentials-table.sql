@@ -1,4 +1,4 @@
-CREATE TABLE credantionals (
+CREATE TABLE credentials (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     email varchar(50) NOT NULL UNIQUE,
     password varchar(50) NOT NULL
