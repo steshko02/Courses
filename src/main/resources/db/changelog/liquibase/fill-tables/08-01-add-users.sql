@@ -1,4 +1,4 @@
-INSERT INTO credantionals (email,password)
+INSERT INTO credentials (email,password)
 VALUES ('stesh2@mail.ru','fnksdk342349f39414');
 
 INSERT INTO profiles (photourl,department,jobtitle,other,githuburl)
@@ -9,7 +9,7 @@ INSERT INTO users(firstname,lastname,credId,profileId)
 VALUES ('Alex','Simple', 1, 1);
 
 
-INSERT INTO credantionals (email,password)
+INSERT INTO credentials (email,password)
 VALUES ('fsdfsd22@mail.ru','fnksdk342349f39414');
 
 INSERT INTO profiles (photourl,department,jobtitle,other,githuburl)

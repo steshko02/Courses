@@ -18,26 +18,19 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "profiles")
-public class Profile {
+@Table(name = "resources")
+public class Resource {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "photourl")
-    private String photoUrl;
+    @Column(name = "size")
+    private Long size;
 
-    @Column(name = "department")
-    private String department;
+    @Column(name = "checksum")
+    private String checksum;
 
-    @Column(name = "jobtitle")
-    private String jobTitle;
-
-    @Column(name = "other")
-    private String other;
-
-    @Column(name = "githuburl")
-    private String githubUrl;
-
+    @Column(name = "description")
+    private String description;
 }

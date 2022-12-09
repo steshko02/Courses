@@ -1,7 +1,8 @@
 package com.example.coursach.entity;
 
+import com.example.coursach.entity.converters.BookingStatusConverter;
 import com.example.coursach.entity.converters.LocalDateTimeConverter;
-import jakarta.persistence.CascadeType;
+import com.example.coursach.entity.enums.BookingStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -10,8 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -28,29 +27,26 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "events")
-public class Event {
+@Table(name = "booking")
+public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "subject")
-    private String subject;
+    @JoinColumn(name = "userid")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    private User user;
 
     @Convert(converter = LocalDateTimeConverter.class)
-    @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    @Column(name = "date_creation")
+    private LocalDateTime dateCreation;
 
-    @Column(name = "message")
-    private String message;
+    @JoinColumn(name = "courseid")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    private Course course;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
-    @JoinTable(
-            name = "users_events",
-            joinColumns = @JoinColumn(name = "eventsid"),
-            inverseJoinColumns = @JoinColumn(name = "userid")
-    )
-    private Set<User> users;
-
+    @JoinColumn(name = "status")
+    @Convert(converter = BookingStatusConverter.class)
+    private BookingStatus status;
 }
