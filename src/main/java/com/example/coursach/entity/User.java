@@ -1,7 +1,10 @@
 package com.example.coursach.entity;
 
+import com.example.coursach.entity.converters.UserStatusConverter;
+import com.example.coursach.entity.enums.UserStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -49,6 +52,11 @@ public class User {
 
     @ManyToMany(mappedBy = "users")
     private Set<Event> events;
+
+
+    @Convert(converter = UserStatusConverter.class)
+    @Column(name = "status", nullable = false)
+    private UserStatus status;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinTable(
