@@ -14,7 +14,7 @@ public class UserConverter {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public User toDto(RegistrationUserDto userDto) {
+    public User toEntity(RegistrationUserDto userDto) {
 
         return User.builder()
                 .firstname(userDto.getFirstname())

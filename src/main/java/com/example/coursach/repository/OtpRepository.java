@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OtpRepository extends JpaRepository<Code, Long> {
 
-    Code findByCodeAndRequestedEmail(Integer code, String email);
+    Code findByCodeAndRequestedCredentialEmail(Integer code, String requestedCredentialEmail);
 
 }

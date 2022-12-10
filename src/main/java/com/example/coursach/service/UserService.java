@@ -22,13 +22,13 @@ public class UserService {
     private final CodeCreator codeCreator;
 
     public void registrationUser(RegistrationUserDto registrationUserDto){
-        User save = userRepository.save(userConverter.toDto(registrationUserDto));
+        User save = userRepository.save(userConverter.toEntity(registrationUserDto));
         otpRepository.save(codeCreator.create(save));
     }
 
     public void confirmUser(ConfirmUserDto confirmUserDto){
         Code byCodeAndRequestedEmail = otpRepository
-                .findByCodeAndRequestedEmail(confirmUserDto.getCode(), confirmUserDto.getEmail());
+                .findByCodeAndRequestedCredentialEmail(confirmUserDto.getCode(), confirmUserDto.getEmail());
 
         User requested = byCodeAndRequestedEmail.getRequested();
         requested.setStatus(UserStatus.ACTIVE);

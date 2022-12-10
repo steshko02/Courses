@@ -1,10 +1,7 @@
 package com.example.coursach.controllers;
 
-import com.example.coursach.converters.UserConverter;
 import com.example.coursach.dto.ConfirmUserDto;
 import com.example.coursach.dto.RegistrationUserDto;
-import com.example.coursach.repository.OtpRepository;
-import com.example.coursach.repository.UserRepository;
 import com.example.coursach.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +24,7 @@ public class UserController {
         userService.registrationUser(registrationUserDto);
     }
 
-    @PostMapping
+    @PostMapping("/confirm")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void confirm(@RequestBody ConfirmUserDto registrationUserDto) {
         userService.confirmUser(registrationUserDto);
