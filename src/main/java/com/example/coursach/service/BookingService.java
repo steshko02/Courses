@@ -4,8 +4,10 @@ import com.example.coursach.converters.BookingConverter;
 import com.example.coursach.converters.CourseConverter;
 import com.example.coursach.dto.BookingDto;
 import com.example.coursach.dto.CourseDto;
+import com.example.coursach.entity.Booking;
 import com.example.coursach.entity.Course;
 import com.example.coursach.entity.User;
+import com.example.coursach.entity.enums.BookingStatus;
 import com.example.coursach.repository.BookingRepository;
 import com.example.coursach.repository.CourseRepository;
 import com.example.coursach.repository.UserRepository;
@@ -36,4 +38,19 @@ public class BookingService {
     public void deleteBookings(Long id) {
         bookingRepository.deleteById(id);
     }
+
+    public void approve(Long id) {
+        Booking booking = bookingRepository.findById(id).get();
+        User user = userRepository.findById(booking.getUser().getId()).get();
+        Course course = courseRepository.findById(booking.getCourse().getId()).get();
+
+        user.getCourses().add(course);
+        course.getUsers().add(user);
+
+        userRepository.save(user);
+        courseRepository.save(course);
+        booking.setStatus(BookingStatus.APPROWED);
+        bookingRepository.save(booking);
+    }
 }
+

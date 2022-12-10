@@ -28,4 +28,9 @@ public class BookingController {
     public void delete(@PathVariable("id") Long id) {
         bookingService.deleteBookings(id);
     }
+
+    @PostMapping("approve/{id}")
+    public void approve(@PathVariable("id") Long id) {
+        bookingService.approve(id);
+    }
 }
