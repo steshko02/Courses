@@ -5,6 +5,9 @@ import com.example.coursach.entity.Event;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Component
 @AllArgsConstructor
 public class EventConverter {
@@ -15,6 +18,14 @@ public class EventConverter {
                 .date(eventDto.getDate().toLocalDateTime())
                 .message(eventDto.getMessage())
                 .subject(eventDto.getSubject())
+                .build();
+    }
+
+    public EventDto toDto(Event event) {
+        return EventDto.builder()
+                .date(event.getDate().atZone(ZoneId.systemDefault()))
+                .subject(event.getSubject())
+                .message(event.getMessage())
                 .build();
     }
 }

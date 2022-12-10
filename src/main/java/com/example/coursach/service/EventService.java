@@ -16,4 +16,10 @@ public class EventService {
     public void createEvent(EventDto eventDto) {
         eventRepository.save(eventConverter.toEntity(eventDto));
     }
+
+    public EventDto getById(Long id) {
+        return eventConverter.toDto(eventRepository.findById(id).get());
+    }
+
+
 }
