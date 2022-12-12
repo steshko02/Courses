@@ -7,3 +7,4 @@ CREATE TABLE works (
     lessonId  BIGSERIAL NOT NULL unique,
     foreign key (lessonId) references lessons (id)
 );
+

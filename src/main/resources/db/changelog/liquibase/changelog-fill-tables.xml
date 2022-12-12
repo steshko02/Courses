@@ -9,7 +9,7 @@
     <include file="fill-tables/08-01-add-roles.sql" relativeToChangelogFile="true"/>
     <include file="fill-tables/08-01-add-users.sql" relativeToChangelogFile="true"/>
     <include file="fill-tables/08-01-add-notifications.sql" relativeToChangelogFile="true"/>
-    <include file="fill-tables/08-01-add-events.sql" relativeToChangelogFile="true"/>
+<!--    <include file="fill-tables/08-01-add-events.sql" relativeToChangelogFile="true"/>-->
     <include file="fill-tables/08-01-add-courses.sql" relativeToChangelogFile="true"/>
     <include file="fill-tables/08-01-add-resources.sql" relativeToChangelogFile="true"/>
     <include file="fill-tables/08-01-add-lessons.sql" relativeToChangelogFile="true"/>
