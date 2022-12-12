@@ -27,13 +27,13 @@ public class ReportConverter {
                 .build();
     }
 
-    public Report toEntity(CheckReportDto checkReportDto) {
+    public Report toEntity(CheckReportDto checkReportDto,Report report) {
 
-        return Report.builder()
-                .comment(checkReportDto.getComments())
-                .status(checkReportDto.getReportStatus())
-                .rating(checkReportDto.getRating())
-                .build();
+        report.setComment(checkReportDto.getComments());
+        report.setStatus(checkReportDto.getReportStatus());
+        report.setRating(checkReportDto.getRating());
+
+        return report;
     }
 
     public ReportDto toDto(Report report) {

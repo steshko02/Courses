@@ -16,7 +16,6 @@ public class BookingConverter {
                 .course(course)
                 .user(user)
                 .status(bookingDto.getStatus())
-                .dateCreation(bookingDto.getDateCreation().toLocalDateTime())
                 .build();
     }
 

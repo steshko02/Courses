@@ -3,12 +3,9 @@ package com.example.coursach.service;
 import com.example.coursach.converters.ReportConverter;
 import com.example.coursach.dto.CheckReportDto;
 import com.example.coursach.dto.ReportCreateDto;
-import com.example.coursach.dto.WorkDto;
-import com.example.coursach.entity.Lesson;
 import com.example.coursach.entity.Report;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.Work;
-import com.example.coursach.repository.LessonRepository;
 import com.example.coursach.repository.ReportRepository;
 import com.example.coursach.repository.UserRepository;
 import com.example.coursach.repository.WorkRepository;
@@ -36,7 +33,7 @@ public class ReportService {
                 .orElseThrow(RuntimeException::new);
 
 
-        reportRepository.save(reportConverter.toEntity(reportCreateDto,user,work,lector));
+        reportRepository.save(reportConverter.toEntity(reportCreateDto, user, work, lector));
     }
 
     public void delete(Long id) {
@@ -45,8 +42,10 @@ public class ReportService {
 
     public void updateForLector(CheckReportDto checkReportDto) {
 
-        Report report = reportConverter.toEntity(checkReportDto);
-        report.setId(checkReportDto.getId());
+        Report report = reportRepository.findById(checkReportDto.getId())
+                .orElseThrow(RuntimeException::new);
+        report = reportConverter.toEntity(checkReportDto, report);
+
         reportRepository.save(report);
     }
 
@@ -61,7 +60,7 @@ public class ReportService {
         Work work = workRepository.findById(reportCreateDto.getWorkId())
                 .orElseThrow(RuntimeException::new);
 
-        Report report = reportConverter.toEntity(reportCreateDto,user,work,lector);
+        Report report = reportConverter.toEntity(reportCreateDto, user, work, lector);
         report.setId(reportCreateDto.getId());
         reportRepository.save(report);
     }
