@@ -42,6 +42,9 @@ public class Lesson {
     @Column(name = "sourceurl")
     private String sourceUrl;
 
+    @Column(name = "duration")
+    private Integer duration;
+
     @JoinColumn(name = "resourceid")
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
     private Resource resource;

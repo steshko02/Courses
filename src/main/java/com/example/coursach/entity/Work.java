@@ -1,6 +1,7 @@
 package com.example.coursach.entity;
 
 import com.example.coursach.entity.converters.CourseStatusConverter;
+import com.example.coursach.entity.converters.LocalDateTimeConverter;
 import com.example.coursach.entity.enums.TimeStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -17,6 +18,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -39,6 +42,10 @@ public class Work {
 
     @Column(name = "sourceurl")
     private String sourceUrl;
+
+    @Convert(converter = LocalDateTimeConverter.class)
+    @Column(name = "deadline", nullable = false)
+    private LocalDateTime deadline;
 
     @JoinColumn(name = "lessonid")
     @OneToOne(fetch = FetchType.LAZY, optional = false)

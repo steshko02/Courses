@@ -50,8 +50,8 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     private Profile profile;
 
-    @ManyToMany(mappedBy = "users")
-    private Set<Event> events;
+//    @ManyToMany(mappedBy = "users")
+//    private Set<Event> events;
 
 
     @Convert(converter = UserStatusConverter.class)

@@ -2,9 +2,7 @@ package com.example.coursach.converters;
 
 
 import com.example.coursach.dto.CourseDto;
-import com.example.coursach.dto.EventDto;
 import com.example.coursach.entity.Course;
-import com.example.coursach.entity.Event;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

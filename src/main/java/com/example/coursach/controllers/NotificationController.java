@@ -1,8 +1,6 @@
 package com.example.coursach.controllers;
 
-import com.example.coursach.dto.EventDto;
 import com.example.coursach.dto.NotificationDto;
-import com.example.coursach.service.EventService;
 import com.example.coursach.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

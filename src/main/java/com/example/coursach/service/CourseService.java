@@ -1,13 +1,9 @@
 package com.example.coursach.service;
 
 import com.example.coursach.converters.CourseConverter;
-import com.example.coursach.converters.EventConverter;
 import com.example.coursach.dto.CourseDto;
-import com.example.coursach.dto.EventDto;
 import com.example.coursach.entity.Course;
-import com.example.coursach.entity.Profile;
 import com.example.coursach.repository.CourseRepository;
-import com.example.coursach.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

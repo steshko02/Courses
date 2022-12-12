@@ -4,6 +4,7 @@ CREATE TABLE lessons (
     description varchar(1024),
     status smallint NOT NULL,
     sourceUrl varchar(128),
+    duration integer not null,
     courseId  BIGSERIAL NOT NULL,
     foreign key (courseId) references courses (id),
     resourceId BIGSERIAL NOT NULL,
