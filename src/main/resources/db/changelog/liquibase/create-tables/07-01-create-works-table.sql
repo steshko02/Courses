@@ -4,7 +4,7 @@ CREATE TABLE works (
     description varchar(1024),
     status smallint NOT NULL,
     sourceUrl varchar(128),
-    lessonId  BIGSERIAL NOT NULL unique,
+    lessonId  bigint NOT NULL unique,
     deadline TIMESTAMP(14) NOT NULL,
     foreign key (lessonId) references lessons (id)
 );

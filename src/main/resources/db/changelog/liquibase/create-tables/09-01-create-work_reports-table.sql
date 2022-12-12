@@ -1,13 +1,13 @@
 CREATE TABLE works_reports (
     id BIGSERIAL PRIMARY KEY NOT NULL,
-    rating INTEGER NOT NULL,
+    rating INTEGER,
     comment varchar(1024),
-    status smallint NOT NULL,
+    status smallint NOT NULL DEFAULT 0,
     sourceUrl varchar(128),
-    userId    BIGSERIAL NOT NULL,
+    userId    bigint NOT NULL,
     foreign key (userId) references users (id),
-    lectorId    BIGSERIAL NOT NULL,
+    lectorId    bigint,
     foreign key (lectorId) references users (id),
-    workId  BIGSERIAL NOT NULL unique,
+    workId  bigint NOT NULL unique,
     foreign key (workId) references works(id)
 );

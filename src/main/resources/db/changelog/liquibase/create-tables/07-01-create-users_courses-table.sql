@@ -1,8 +1,8 @@
 CREATE TABLE users_courses
 (
-    userId    BIGSERIAL NOT NULL,
-    coursesId BIGSERIAL NOT NULL,
-    roleId    BIGSERIAL NOT NULL,
+    userId    bigint NOT NULL,
+    coursesId bigint NOT NULL,
+    roleId    bigint NOT NULL,
     primary key (userId, coursesId),
     foreign key (userId) references users (id),
     foreign key (coursesId) references courses (id),

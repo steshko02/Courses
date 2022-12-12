@@ -20,4 +20,6 @@ public class ProfileUserDto {
     private final String other;
 
     private final String githubUrl;
+
+    private final Long userId;
 }

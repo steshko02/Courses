@@ -19,9 +19,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void createUser(@RequestBody RegistrationUserDto registrationUserDto) {
-        userService.registrationUser(registrationUserDto);
+    public Long createUser(@RequestBody RegistrationUserDto registrationUserDto) {
+      return  userService.registrationUser(registrationUserDto);
     }
 
     @PostMapping("/confirm")

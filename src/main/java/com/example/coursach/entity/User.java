@@ -43,19 +43,15 @@ public class User {
     private String lastname;
 
     @JoinColumn(name = "credid")
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Credential credential;
 
-    @JoinColumn(name = "profileid")
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "profileid", nullable = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Profile profile;
 
-//    @ManyToMany(mappedBy = "users")
-//    private Set<Event> events;
-
-
     @Convert(converter = UserStatusConverter.class)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private UserStatus status;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})

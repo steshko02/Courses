@@ -21,7 +21,9 @@
     <include file="create-tables/07-01-create-booking-table.sql" relativeToChangelogFile="true"/>
     <include file="create-tables/07-01-create-resources-table.sql" relativeToChangelogFile="true"/>
     <include file="create-tables/07-01-create-lessons-table.sql" relativeToChangelogFile="true"/>
+    <include file="create-tables/07-01-create-works-table.sql" relativeToChangelogFile="true"/>
     <include file="create-tables/09-01-create-work_reports-table.sql" relativeToChangelogFile="true"/>
+    <include file="create-tables/10-01-create-procedures.sql" relativeToChangelogFile="true"/>
 
 
 </databaseChangeLog>

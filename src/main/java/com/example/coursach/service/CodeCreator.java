@@ -6,6 +6,8 @@ import com.example.coursach.entity.enums.CodeType;
 import com.example.coursach.utility.Generator;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class CodeCreator {
 
@@ -14,6 +16,7 @@ public class CodeCreator {
                 .code(Generator.generateSixDigitalCode())
                 .requested(user)
                 .type(CodeType.AUTH)
+                .dateCreation(LocalDateTime.now())
                 .build();
     }
 }

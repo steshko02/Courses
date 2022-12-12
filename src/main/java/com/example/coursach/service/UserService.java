@@ -21,9 +21,11 @@ public class UserService {
 
     private final CodeCreator codeCreator;
 
-    public void registrationUser(RegistrationUserDto registrationUserDto){
-        User save = userRepository.save(userConverter.toEntity(registrationUserDto));
-        otpRepository.save(codeCreator.create(save));
+    public Long registrationUser(RegistrationUserDto registrationUserDto){
+        User save1 = userConverter.toEntity(registrationUserDto);
+        save1 = userRepository.save(save1);
+        otpRepository.save(codeCreator.create(save1));
+        return save1.getId();
     }
 
     public void confirmUser(ConfirmUserDto confirmUserDto){

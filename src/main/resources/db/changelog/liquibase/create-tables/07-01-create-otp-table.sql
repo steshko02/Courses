@@ -3,6 +3,6 @@ CREATE TABLE otp (
     code integer NOT NULL,
     codeType varchar(6) NOT NULL,
     date_creation TIMESTAMP(14) DEFAULT CURRENT_TIMESTAMP,
-    userId BIGSERIAL NOT NULL,
+    userId bigint NOT NULL,
     foreign key (userId) references users(id)
 );

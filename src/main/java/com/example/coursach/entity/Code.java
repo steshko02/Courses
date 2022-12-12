@@ -43,8 +43,7 @@ public class Code {
     @Enumerated(EnumType.STRING)
     private CodeType type;
 
-    @Convert(converter = LocalDateTimeConverter.class)
-    @Column(name = "date_creation", nullable = false)
+    @Column(name = "date_creation")
     private LocalDateTime dateCreation;
 
     @JoinColumn(name = "userid", unique = true)
