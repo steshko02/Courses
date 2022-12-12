@@ -3,10 +3,12 @@ package com.example.coursach.converters;
 
 import com.example.coursach.dto.CourseDto;
 import com.example.coursach.entity.Course;
+import com.example.coursach.entity.Lesson;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -33,6 +35,7 @@ public class CourseConverter {
                 .end(course.getEnd().atZone(ZoneId.systemDefault()))
                 .start(course.getStart().atZone(ZoneId.systemDefault()))
                 .type(course.getType())
+                .ids(course.getLessons().stream().map(Lesson::getId).collect(Collectors.toList()))
                 .build();
     }
 }

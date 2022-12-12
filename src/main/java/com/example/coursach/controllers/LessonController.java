@@ -22,9 +22,8 @@ public class LessonController {
     private final LessonService lessonService;
 
     @PostMapping
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void createLesson(@RequestBody LessonDto lessonDto) {
-        lessonService.createLesson(lessonDto);
+    public Long createLesson(@RequestBody LessonDto lessonDto) {
+      return   lessonService.createLesson(lessonDto);
     }
 
     @GetMapping("/{id}")

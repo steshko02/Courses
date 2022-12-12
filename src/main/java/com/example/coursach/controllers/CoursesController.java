@@ -23,9 +23,8 @@ public class CoursesController {
     private final CourseService courseService;
 
     @PostMapping
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void createCourse(@RequestBody CourseDto courseDto) {
-        courseService.createCourse(courseDto);
+    public Long createCourse(@RequestBody CourseDto courseDto) {
+       return courseService.createCourse(courseDto);
     }
 
     @GetMapping("/{id}")
@@ -36,7 +35,7 @@ public class CoursesController {
 
     @PutMapping
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void updateProfile(@RequestBody CourseDto courseDto) {
+    public void update(@RequestBody CourseDto courseDto) {
         courseService.update(courseDto);
     }
 

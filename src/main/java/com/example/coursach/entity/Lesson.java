@@ -50,7 +50,7 @@ public class Lesson {
     private Resource resource;
 
     @JoinColumn(name = "courseid")
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Course course;
 
     @Convert(converter = CourseStatusConverter.class)

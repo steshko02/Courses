@@ -13,8 +13,8 @@ public class CourseService {
     private final CourseConverter courseConverter;
     private final CourseRepository courseRepository;
 
-    public void createCourse(CourseDto courseDto) {
-        courseRepository.save(courseConverter.toEntity(courseDto));
+    public Long createCourse(CourseDto courseDto) {
+      return   courseRepository.save(courseConverter.toEntity(courseDto)).getId();
     }
 
     public CourseDto getById(Long id) {

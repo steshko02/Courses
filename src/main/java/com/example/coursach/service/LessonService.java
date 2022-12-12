@@ -19,14 +19,14 @@ public class LessonService {
     private final CourseRepository courseRepository;
     private final ResourceRepository repository;
 
-    public void createLesson(LessonDto lessonDto) {
+    public Long createLesson(LessonDto lessonDto) {
         Course course = courseRepository.findById(lessonDto.getCourseId())
                 .orElseThrow(RuntimeException::new);
 
         Resource resource = repository.findById(lessonDto.getResourceId())
                 .orElse(null);
 
-        lessonRepository.save(lessonConverter.toEntity(lessonDto, course, resource));
+       return lessonRepository.save(lessonConverter.toEntity(lessonDto, course, resource)).getId();
     }
 
     public LessonDto getById(Long id) {

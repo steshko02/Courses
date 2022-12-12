@@ -32,7 +32,7 @@ public class LessonConverter {
                 .status(lesson.getStatus())
                 .description(lesson.getDescription())
                 .duration(lesson.getDuration())
-                .resourceId(lesson.getCourse().getId())
+                .resourceId(lesson.getResource().getId())
                 .sourceUrl(lesson.getSourceUrl())
                 .title(lesson.getTitle())
                 .build();
