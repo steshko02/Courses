@@ -2,15 +2,13 @@ package com.example.coursach.converters;
 
 import com.example.coursach.dto.RegistrationUserDto;
 import com.example.coursach.entity.Credential;
-import com.example.coursach.entity.Role;
 import com.example.coursach.entity.User;
-import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.entity.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.HashSet;
 
 @Component
 @AllArgsConstructor
@@ -18,7 +16,7 @@ public class UserConverter {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public User toEntity(RegistrationUserDto userDto) {
+    public User toEntityWithoutRole(RegistrationUserDto userDto) {
 
         return User.builder()
                 .firstname(userDto.getFirstname())
@@ -29,7 +27,7 @@ public class UserConverter {
                                 .password(bCryptPasswordEncoder.encode(userDto.getPassword()))
                                 .build()
                 )
-                .roles(Set.of(Role.builder().id(1L).name(UserRole.USER).build()))
+                .roles(new HashSet<>())
                 .status(UserStatus.NOT_ACTIVE)
                 .build();
     }
