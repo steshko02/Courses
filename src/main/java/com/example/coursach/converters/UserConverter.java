@@ -1,11 +1,14 @@
 package com.example.coursach.converters;
 
 import com.example.coursach.dto.RegistrationUserDto;
+import com.example.coursach.dto.security.RegisterRequestDto;
 import com.example.coursach.entity.Credential;
 import com.example.coursach.entity.User;
+import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.entity.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -31,4 +34,5 @@ public class UserConverter {
                 .status(UserStatus.NOT_ACTIVE)
                 .build();
     }
+
 }

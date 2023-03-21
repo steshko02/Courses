@@ -1,6 +1,6 @@
 package com.example.coursach.dto.security;
 
-import eu.senla.git.coowning.exception.ErrorCode;
+import com.example.coursach.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;

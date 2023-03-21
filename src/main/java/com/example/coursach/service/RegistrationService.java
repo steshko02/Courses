@@ -6,6 +6,7 @@ import com.example.coursach.dto.security.RegisterConfirmDto;
 import com.example.coursach.dto.security.RegisterRequestDto;
 import com.example.coursach.entity.Code;
 import com.example.coursach.entity.User;
+import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.repository.OtpRepository;
 import com.example.coursach.repository.UserRepository;
 import com.example.coursach.security.utils.JwtTokenProvider;
@@ -68,13 +69,12 @@ public class RegistrationService {
         this.codeRepository = codeRepository;
         this.systemClock = systemClock;
     }
-    //CHECKSTYLE:ON
 
     @Transactional
     public void register(RegisterRequestDto registerDto) {
 
-        User user = userRepository.findUserByEmail(registerDto.getEmail())
-                .orElseGet(() -> userConverter.toEntity(registerDto, bCryptPasswordEncoder, UserRole.USER));
+        User user = userRepository.findByCredentialEmail(registerDto.getEmail())
+                .orElseGet(() -> userConverter.toEntityWithoutRole(registerDto);
 
         if (user.getAccountStatus() == AccountStatus.ACTIVE) {
             throw new UserAlreadyExistException(registerDto.getEmail());
