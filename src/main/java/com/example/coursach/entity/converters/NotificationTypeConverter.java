@@ -1,7 +1,8 @@
 package com.example.coursach.entity.converters;
 
 import com.example.coursach.entity.enums.NotificationType;
-import jakarta.persistence.AttributeConverter;
+
+import javax.persistence.AttributeConverter;
 
 public class NotificationTypeConverter  implements AttributeConverter<NotificationType, Integer> {
     @Override

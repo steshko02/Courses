@@ -1,5 +1,7 @@
 package com.example.coursach.security.utils;
 
+import com.example.coursach.config.properties.JwtProperties;
+import com.example.coursach.security.model.AuthorizedUser;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

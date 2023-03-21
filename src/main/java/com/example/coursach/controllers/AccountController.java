@@ -9,7 +9,6 @@ import com.example.coursach.dto.user.RecoveryRequestDto;
 import com.example.coursach.service.RegistrationService;
 import com.example.coursach.service.UserService;
 import com.example.coursach.service.model.RegistrationResult;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
-@RequiredArgsConstructor
-public class AuthController {
+public class AccountController {
+
     public static final String REGISTRATION_PATH = "/sign-up";
 
     private final UserService userService;
@@ -31,7 +30,7 @@ public class AuthController {
 
     private final RegistrationService registrationService;
 
-    public AuthController(UserService userService, JwtProperties jwtProperties,
+    public AccountController(UserService userService, JwtProperties jwtProperties,
                              RegistrationService registrationService) {
         this.userService = userService;
         this.jwtProperties = jwtProperties;
@@ -60,6 +59,5 @@ public class AuthController {
     public StatusDto setPassword(@RequestBody PasswordSettingRequestDto passwordSettingRequestDto) {
         return userService.passwordSettingUp(passwordSettingRequestDto);
     }
-
 
 }

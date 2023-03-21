@@ -1,6 +1,13 @@
 package com.example.coursach.security.filters;
 
+import com.example.coursach.config.properties.JwtProperties;
+import com.example.coursach.dto.error.ErrorMessageDto;
+import com.example.coursach.dto.security.LoginRequestDto;
+import com.example.coursach.dto.user.security.JwtResponseDto;
+import com.example.coursach.exception.user.InvalidUsernameOrPasswordException;
+import com.example.coursach.security.model.AuthorizedUser;
 import com.example.coursach.security.utils.JwtTokenProvider;
+import com.example.coursach.service.ErrorMessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -82,14 +89,23 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain chain,
-            Authentication authResult) {
-        AuthorizedUser userDetails = (AuthorizedUser) authResult.getPrincipal();
+            Authentication authResult) throws IOException {
 
+        AuthorizedUser userDetails = (AuthorizedUser) authResult.getPrincipal();
+        String tokenWithBearerPrefix = jwtTokenProvider.createTokenWithBearerPrefix(userDetails);
         response.addHeader(
                 jwtProperties.getAccessTokenKey(),
-                jwtTokenProvider.createTokenWithBearerPrefix(userDetails)
+                tokenWithBearerPrefix
         );
+
+        JwtResponseDto build = JwtResponseDto.builder().jwt(tokenWithBearerPrefix).build();
+        ObjectMapper om = new ObjectMapper();
+        String json = om.writeValueAsString(build);
+
+        response.getWriter().write(json);
+        response.flushBuffer();
     }
+
 
     @Override
     protected void unsuccessfulAuthentication(

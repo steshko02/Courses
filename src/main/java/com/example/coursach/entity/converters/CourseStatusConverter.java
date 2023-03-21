@@ -1,7 +1,8 @@
 package com.example.coursach.entity.converters;
 
 import com.example.coursach.entity.enums.TimeStatus;
-import jakarta.persistence.AttributeConverter;
+
+import javax.persistence.AttributeConverter;
 
 public class CourseStatusConverter implements AttributeConverter<TimeStatus, Integer> {
     @Override

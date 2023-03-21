@@ -3,11 +3,11 @@ package com.example.coursach.security.utils;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.security.model.AuthorizedUser;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class UserDetailsFactory {
@@ -19,14 +19,12 @@ public class UserDetailsFactory {
                 user.getEmail(),
                 user.getPassword(),
                 user.getId(),
-                mapRoleToGrantedAuthorities(user.getRole())
+                mapRoleToGrantedAuthorities(user.getRoles())
         );
     }
 
-    private List<GrantedAuthority> mapRoleToGrantedAuthorities(UserRole role) {
-        return List.of(
-                new SimpleGrantedAuthority(ROLE_PREFIX + role.toString())
-        );
+    private List<SimpleGrantedAuthority> mapRoleToGrantedAuthorities(Set<UserRole> role) {
+        return role.stream().map(r->new SimpleGrantedAuthority(ROLE_PREFIX + r.toString())).toList();
     }
 
 }

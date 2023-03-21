@@ -1,7 +1,7 @@
 package com.example.coursach.exception.user;
 
-import eu.senla.git.coowning.exception.ErrorCode;
-import eu.senla.git.coowning.exception.MessageWithErrorCodeException;
+import com.example.coursach.exception.ErrorCode;
+import com.example.coursach.exception.MessageWithErrorCodeException;
 import org.springframework.http.HttpStatus;
 
 public class WeakPasswordException extends MessageWithErrorCodeException {

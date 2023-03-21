@@ -1,4 +1,4 @@
-package com.example.coursach.security;
+package com.example.coursach.security.config;
 
 import com.example.coursach.security.filters.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.example.coursach.controllers.AuthController.REGISTRATION_PATH;
+import static com.example.coursach.controllers.AccountController.REGISTRATION_PATH;
 
 @Configuration
 @EnableWebSecurity
@@ -22,10 +22,12 @@ import static com.example.coursach.controllers.AuthController.REGISTRATION_PATH;
         securedEnabled = true,
         jsr250Enabled = true
 
-)public class SecurityConfig {
+)
+public class SecurityConfiguration {
+
     private final JwtTokenFilter jwtTokenFilter;
 
-    public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfiguration(JwtTokenFilter jwtTokenFilter) {
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
@@ -58,4 +60,3 @@ import static com.example.coursach.controllers.AuthController.REGISTRATION_PATH;
         return http.build();
     }
 }
-
