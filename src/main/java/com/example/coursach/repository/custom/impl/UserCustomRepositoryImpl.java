@@ -1,19 +1,10 @@
 package com.example.coursach.repository.custom.impl;
 
+import com.example.coursach.entity.Profile_;
 import com.example.coursach.entity.User;
+import com.example.coursach.entity.User_;
 import com.example.coursach.entity.enums.AccountStatus;
 import com.example.coursach.repository.custom.UserCustomRepository;
-import eu.senla.git.coowning.entity.Profile_;
-import eu.senla.git.coowning.entity.SharedItem;
-import eu.senla.git.coowning.entity.SharedItemOwnership;
-import eu.senla.git.coowning.entity.SharedItemOwnershipId_;
-import eu.senla.git.coowning.entity.SharedItemOwnership_;
-import eu.senla.git.coowning.entity.SharedItem_;
-import eu.senla.git.coowning.entity.User;
-import eu.senla.git.coowning.entity.User_;
-import eu.senla.git.coowning.entity.enums.AccountStatus;
-import eu.senla.git.coowning.entity.enums.UserStatus;
-import eu.senla.git.coowning.repository.custom.UserCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,8 +17,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Collections;
@@ -141,6 +130,25 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 
         return query.getResultList();
     }
+
+    @Override
+    public Optional<User> findUserByEmailExcludedInvitedWithFetchProfile(String email) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+
+        cq.select(root)
+                .where(
+                        cb.equal(root.get(User_.EMAIL), email),
+                        cb.notEqual(root.get(User_.ACCOUNT_STATUS), AccountStatus.INVITED)
+                );
+
+        TypedQuery<User> query = em.createQuery(cq);
+        query.setHint(LOADGRAPH, getEntityGraphWithFetchToProfile());
+        List<User> resultList = query.getResultList();
+        return resultList.stream().findFirst();
+    }
+
 
 
     private EntityGraph<User> getEntityGraphWithFetchToProfile() {

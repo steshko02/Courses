@@ -7,6 +7,7 @@ import com.example.coursach.entity.Report;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.Work;
 import com.example.coursach.repository.ReportRepository;
+import com.example.coursach.repository.UserRepository;
 import com.example.coursach.repository.WorkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

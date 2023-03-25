@@ -1,6 +1,9 @@
 package com.example.coursach.repository.custom.impl;
 
-import com.example.coursach.entity.Notification;
+import com.example.coursach.entity.User_;
+import com.example.coursach.entity.notification.Notification;
+import com.example.coursach.entity.notification.Notification_;
+import com.example.coursach.entity.notification.UserAcceptInvitationNotification_;
 import com.example.coursach.repository.custom.NotificationCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

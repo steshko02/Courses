@@ -1,6 +1,5 @@
 package com.example.coursach.service;
 
-import com.example.coursach.converters.UserConverter;
 import com.example.coursach.dto.pagable.PageableRequestDto;
 import com.example.coursach.dto.picture.StatusDto;
 import com.example.coursach.dto.user.BaseUserInformationDto;
@@ -15,6 +14,7 @@ import com.example.coursach.exception.user.UserNotFoundException;
 import com.example.coursach.exception.user.WeakPasswordException;
 import com.example.coursach.repository.CodeRepository;
 import com.example.coursach.repository.UserRepository;
+import com.example.coursach.service.converter.UserConverter;
 import com.example.coursach.service.model.LocalMessageCodes;
 import com.example.coursach.service.model.mail.Notification;
 import com.example.coursach.service.model.mail.enums.MailScope;

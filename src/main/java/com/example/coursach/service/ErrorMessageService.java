@@ -1,13 +1,13 @@
 package com.example.coursach.service;
 
-import eu.senla.git.coowning.dto.error.ErrorMessageDto;
-import eu.senla.git.coowning.entity.message.ErrorMessage;
-import eu.senla.git.coowning.entity.message.MessageId;
-import eu.senla.git.coowning.entity.message.MessageLocale;
-import eu.senla.git.coowning.exception.MessageWithErrorCodeException;
-import eu.senla.git.coowning.exception.shareditem.CommonInvalidFieldException;
-import eu.senla.git.coowning.repository.ErrorMessageRepository;
-import eu.senla.git.coowning.service.converter.ErrorMessageConverter;
+import com.example.coursach.dto.error.ErrorMessageDto;
+import com.example.coursach.entity.message.ErrorMessage;
+import com.example.coursach.entity.message.MessageId;
+import com.example.coursach.entity.message.MessageLocale;
+import com.example.coursach.exception.MessageWithErrorCodeException;
+import com.example.coursach.exception.user.CommonInvalidFieldException;
+import com.example.coursach.repository.ErrorMessageRepository;
+import com.example.coursach.service.converter.ErrorMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 

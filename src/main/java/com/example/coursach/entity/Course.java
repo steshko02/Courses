@@ -63,8 +63,8 @@ public class Course {
     @Column(name = "date_end", nullable = false)
     private LocalDateTime end;
 
-    @ManyToMany(mappedBy = "courses")
-    private Set<User> users;
+    @OneToMany(mappedBy = "course")
+    private List<CourseUser> joinUsers;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
     private List<Lesson> lessons;

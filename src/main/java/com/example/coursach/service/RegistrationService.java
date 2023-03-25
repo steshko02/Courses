@@ -1,20 +1,26 @@
 package com.example.coursach.service;
 
 import com.example.coursach.config.properties.RegexProperties;
-import com.example.coursach.converters.UserConverter;
 import com.example.coursach.dto.security.RegisterConfirmDto;
 import com.example.coursach.dto.security.RegisterRequestDto;
+import com.example.coursach.dto.user.ResendCodeRequestDto;
 import com.example.coursach.entity.Code;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.enums.AccountStatus;
+import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.exception.user.UserAlreadyExistException;
 import com.example.coursach.exception.user.UserNotFoundException;
+import com.example.coursach.exception.user.WeakPasswordException;
+import com.example.coursach.repository.CodeRepository;
+import com.example.coursach.repository.UserRepository;
 import com.example.coursach.security.model.AuthorizedUser;
 import com.example.coursach.security.utils.JwtTokenProvider;
 import com.example.coursach.security.utils.UserDetailsFactory;
+import com.example.coursach.service.converter.UserConverter;
 import com.example.coursach.service.model.RegistrationResult;
 import com.example.coursach.service.model.mail.Notification;
 import com.example.coursach.service.model.mail.enums.MailScope;
+import com.example.coursach.service.utils.Generator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,11 +52,14 @@ public class RegistrationService {
 
     private final UserConverter userConverter;
 
-//    private final EmailSenderService postman;
+    private final EmailSenderService postman;
 
-    private final OtpRepository codeRepository;
+    private final CodeRepository codeRepository;
 
     private final Clock systemClock;
+
+    private final CurrentUserRequestLocaleService currentUserRequestLocaleService;
+
 
     public RegistrationService(
             AuthenticationManager authenticationManager,
@@ -60,8 +69,10 @@ public class RegistrationService {
             RegexProperties regexProperties,
             UserRepository userRepository,
             UserConverter userConverter,
-            OtpRepository codeRepository,
-            Clock systemClock) {
+            EmailSenderService postman,
+            CodeRepository codeRepository,
+            Clock systemClock,
+            CurrentUserRequestLocaleService currentUserRequestLocaleService) {
         this.authenticationManager = authenticationManager;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userDetailsFactory = userDetailsFactory;
@@ -69,15 +80,17 @@ public class RegistrationService {
         this.regexProperties = regexProperties;
         this.userRepository = userRepository;
         this.userConverter = userConverter;
+        this.postman = postman;
         this.codeRepository = codeRepository;
         this.systemClock = systemClock;
+        this.currentUserRequestLocaleService = currentUserRequestLocaleService;
     }
 
     @Transactional
     public void register(RegisterRequestDto registerDto) {
 
-        User user = userRepository.findByCredentialEmail(registerDto.getEmail())
-                .orElseGet(() -> userConverter.toEntityWithoutRole(registerDto);
+        User user = userRepository.findUserByEmail(registerDto.getEmail())
+                .orElseGet(() -> userConverter.toEntity(registerDto, bCryptPasswordEncoder, UserRole.USER));
 
         if (user.getAccountStatus() == AccountStatus.ACTIVE) {
             throw new UserAlreadyExistException(registerDto.getEmail());

@@ -1,5 +1,6 @@
 package com.example.coursach.service.validator;
 
+import com.example.coursach.exception.user.InvalidFieldException;
 import com.example.coursach.service.validator.model.ValidationRule;
 import com.example.coursach.service.validator.model.ValidationType;
 import org.springframework.stereotype.Component;

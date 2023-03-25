@@ -9,10 +9,10 @@ import java.util.Collection;
 @Getter
 public class AuthorizedUser extends User {
 
-    private final Long id;
+    private final String uuid;
 
-    public AuthorizedUser(String username, String password, Long id, Collection<? extends GrantedAuthority> authorities) {
+    public AuthorizedUser(String username, String password, String id, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
-        this.id = id;
+        this.uuid = id;
     }
 }

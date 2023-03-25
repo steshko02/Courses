@@ -1,9 +1,10 @@
 package com.example.coursach.service;
 
+import com.example.coursach.service.model.mail.GreetingsNotification;
+import com.example.coursach.service.model.mail.Notification;
 import com.example.coursach.service.model.mail.RecoveryNotification;
-import eu.senla.git.coowning.service.model.mail.Notification;
-import eu.senla.git.coowning.service.model.mail.enums.MailScope;
-import eu.senla.git.coowning.service.model.mail.template.MailTemplate;
+import com.example.coursach.service.model.mail.enums.MailScope;
+import com.example.coursach.service.model.mail.template.MailTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class EmailSenderService {
     }
 
     @Async
-    public void send(RecoveryNotification notification) {
+    public void send(Notification notification) {
         final MailTemplate currentTemplate = Optional.ofNullable(mailTemplates.get(notification.getMailScope()))
                         .orElseThrow(InvalidParameterException::new);
 

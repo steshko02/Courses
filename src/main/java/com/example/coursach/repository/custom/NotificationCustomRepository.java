@@ -1,6 +1,6 @@
 package com.example.coursach.repository.custom;
 
-import com.example.coursach.entity.Notification;
+import com.example.coursach.entity.notification.Notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,13 +1,16 @@
 package com.example.coursach.entity;
 
+import com.example.coursach.entity.converters.AccountStatusConverter;
 import com.example.coursach.entity.converters.UserStatusConverter;
-import com.example.coursach.entity.enums.UserRole;
+import com.example.coursach.entity.enums.AccountStatus;
 import com.example.coursach.entity.enums.UserStatus;
+import com.example.coursach.entity.notification.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,14 +18,15 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,8 +39,10 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", unique = true)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    private String id;
 
     @Column(name = "firstname")
     private String firstname;
@@ -54,9 +60,12 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Profile profile;
 
-    @Convert(converter = UserStatusConverter.class)
-    @Column(name = "status")
-    private UserStatus status;
+    @Column(name = "account_status", nullable = false, columnDefinition = "smallint default '1'")
+    @Convert(converter = AccountStatusConverter.class)
+    private AccountStatus accountStatus;
+
+    @OneToOne(mappedBy = "requested", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    private Code code;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinTable(
@@ -64,13 +73,12 @@ public class User {
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "roleid")
     )
-    private Set<UserRole> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
-    @JoinTable(
-            name = "users_courses",
-            joinColumns = @JoinColumn(name = "userid"),
-            inverseJoinColumns = @JoinColumn(name = "coursesid")
-    )
-    private Set<Course> courses;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
+    private List<CourseUser> joinCourses;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Notification> notifications;
+
 }

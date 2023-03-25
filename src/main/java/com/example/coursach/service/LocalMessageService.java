@@ -1,10 +1,9 @@
 package com.example.coursach.service;
 
-
-import eu.senla.git.coowning.entity.message.LocalMessage;
-import eu.senla.git.coowning.entity.message.MessageId;
-import eu.senla.git.coowning.repository.LocalMessageRepository;
-import eu.senla.git.coowning.service.model.LocalMessageCodes;
+import com.example.coursach.entity.message.LocalMessage;
+import com.example.coursach.entity.message.MessageId;
+import com.example.coursach.repository.LocalMessageRepository;
+import com.example.coursach.service.model.LocalMessageCodes;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

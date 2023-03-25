@@ -1,6 +1,5 @@
 package com.example.coursach.service;
 
-import com.example.coursach.converters.ProfileConverter;
 import com.example.coursach.dto.profile.CreateProfileDto;
 import com.example.coursach.dto.profile.ProfileInfoDto;
 import com.example.coursach.dto.profile.UpdateProfileDto;
@@ -10,6 +9,7 @@ import com.example.coursach.exception.profile.ProfileNotFoundException;
 import com.example.coursach.exception.user.UserNotFoundException;
 import com.example.coursach.repository.ProfileRepository;
 import com.example.coursach.repository.UserRepository;
+import com.example.coursach.service.converter.ProfileConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

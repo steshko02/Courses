@@ -1,17 +1,17 @@
 package com.example.coursach.entity.converters;
 
-import com.example.coursach.entity.enums.UserStatus;
+import com.example.coursach.entity.enums.AccountStatus;
 
 import javax.persistence.AttributeConverter;
 
-public class UserStatusConverter implements AttributeConverter<UserStatus, Integer> {
+public class UserStatusConverter implements AttributeConverter<AccountStatus, Integer> {
     @Override
-    public Integer convertToDatabaseColumn(UserStatus userStatus) {
+    public Integer convertToDatabaseColumn(AccountStatus userStatus) {
         return userStatus.getVal();
     }
 
     @Override
-    public UserStatus convertToEntityAttribute(Integer integer) {
-        return UserStatus.lookup(integer);
+    public AccountStatus convertToEntityAttribute(Integer integer) {
+        return AccountStatus.lookup(integer);
     }
 }

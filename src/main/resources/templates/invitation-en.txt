@@ -1,0 +1,19 @@
+Dear {potential_user_name} / Friend, I invite you to get together and participate with me in the co-ownership of the {objectInfo}, {image}. I’m sure it will be an interesting and exciting journey. I hope you will join and make the process funny and memorable.
+
+Best regards, {owner_name}.
+
+
+Invitation link - {invitation_link}
+
+Invitation code - {6_digital_code}
+
+To register and get access to the object, please follow the link and take the following steps:
+
+- Download the Co-owning app,
+- Launch the app,
+- Select the option "I have a code",
+- Enter the code from the message
+
+OR
+
+After downloading the application, go back to this message and click on the link specified above.

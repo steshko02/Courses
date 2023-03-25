@@ -2,24 +2,18 @@ package com.example.coursach.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import eu.senla.git.coowning.config.properties.minio.MinioDataStorageProperties;
-import eu.senla.git.coowning.dto.picture.PictureDto;
-import eu.senla.git.coowning.dto.picture.StatusDto;
-import eu.senla.git.coowning.entity.Invoice;
-import eu.senla.git.coowning.entity.Profile;
-import eu.senla.git.coowning.entity.SharedItem;
-import eu.senla.git.coowning.entity.User;
-import eu.senla.git.coowning.exception.photo.PictureDontExistsException;
-import eu.senla.git.coowning.exception.photo.WrongPhotoFormatException;
-import eu.senla.git.coowning.exception.profile.ProfileNotFoundException;
-import eu.senla.git.coowning.exception.shareditem.SharedItemsLimitException;
-import eu.senla.git.coowning.exception.user.UserNotFoundException;
-import eu.senla.git.coowning.repository.InvoiceRepository;
-import eu.senla.git.coowning.repository.ProfileRepository;
-import eu.senla.git.coowning.repository.SharedItemsRepository;
-import eu.senla.git.coowning.repository.UserRepository;
-import eu.senla.git.coowning.storage.extractor.Extractors;
-import eu.senla.git.coowning.storage.pattern.Patterns;
+import com.example.coursach.config.properties.minio.MinioDataStorageProperties;
+import com.example.coursach.dto.picture.PictureDto;
+import com.example.coursach.dto.picture.StatusDto;
+import com.example.coursach.entity.Profile;
+import com.example.coursach.entity.User;
+import com.example.coursach.exception.photo.WrongPhotoFormatException;
+import com.example.coursach.exception.profile.ProfileNotFoundException;
+import com.example.coursach.exception.user.UserNotFoundException;
+import com.example.coursach.repository.ProfileRepository;
+import com.example.coursach.repository.UserRepository;
+import com.example.coursach.storage.extractor.Extractors;
+import com.example.coursach.storage.pattern.Patterns;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -45,8 +39,6 @@ public class MinioStorageService {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final MinioDataStorageProperties minioProperties;
-    private final InvoiceRepository invoiceRepository;
-    private final SharedItemsRepository sharedItemsRepository;
 
     public StatusDto uploadObject(MultipartFile photoToUpload, String userUuid) {
         /*
@@ -84,35 +76,6 @@ public class MinioStorageService {
                 .build();
     }
 
-    public StatusDto uploadObject(MultipartFile photoToUpload, Invoice invoice, String itemUuid) {
-
-        String invoiceUuid = invoice.getUuid();
-        String filename = Extractors.extractFileName(photoToUpload,
-                invoiceUuid,
-                minioProperties.getAllowedPhotoFormats());
-
-        File finalFile = Extractors.extractFileFromMultipart(photoToUpload, filename,
-                String.format(Patterns.SERVER_STORAGE_PATTERN, minioProperties.getInvoicesDirectoryPath(), itemUuid));
-
-        Optional<String> pictureFormat = Optional.ofNullable(invoice.getPictureFormat());
-        pictureFormat.ifPresent(p -> amazonS3Client
-                .deleteObject(String.format("%s/%s", minioProperties.getInvoicesPictureStorageBucket(), itemUuid),
-                        String.format(Patterns.PHOTO_FORMAT_PATTERN, invoiceUuid, pictureFormat.get())));
-
-        amazonS3Client.putObject(new PutObjectRequest(minioProperties.getInvoicesPictureStorageBucket(),
-                String.format(Patterns.MINIO_FOLDER_PATTERN, itemUuid, filename), finalFile));
-
-        invoice.setPictureFormat(Extractors.extractPictureFormat(finalFile.getName()));
-        invoiceRepository.save(invoice);
-
-        finalFile.delete();
-        return StatusDto.builder()
-                .pictureId(invoiceUuid)
-                .timestamp(LocalDateTime.now(systemClock).toString())
-                .message(SUCCESS_UPLOAD)
-                .build();
-    }
-
     public List<String> uploadObject(String itemUuid, MultipartFile multipartFile, List<String> existingPictures) {
         Integer pictureNumber;
 
@@ -123,8 +86,8 @@ public class MinioStorageService {
                     .get(existingPictures.size() - 1)
                     .split(Patterns.PICTURE_SPLIT_PATTERN)).findFirst().orElse(ONE)) + 1;
 
-            if (pictureNumber > minioProperties.getSharedItemPicturesLimit()) {
-                throw new SharedItemsLimitException();
+            if (pictureNumber > minioProperties.getCoursesSenlaPicturesLimit()) {
+                throw new RuntimeException();
             }
         }
 
@@ -144,22 +107,6 @@ public class MinioStorageService {
         return existingPictures;
     }
 
-    public String removeObject(SharedItem sharedItem, Integer pictureId) {
-        final String sharedItemFolderLink = constructMinioFolderLink(sharedItem, pictureId);
-
-        if (amazonS3Client.doesObjectExist(minioProperties.getItemsPicturesStorageBucket(), sharedItemFolderLink)) {
-            amazonS3Client.deleteObject(minioProperties.getItemsPicturesStorageBucket(), sharedItemFolderLink);
-
-            return getPictureWithFormat(sharedItem.getPictures(), pictureId);
-        } else {
-            throw new PictureDontExistsException();
-        }
-    }
-
-    private String constructMinioFolderLink(SharedItem sharedItem, Integer pictureId) {
-        return String.format(Patterns.MINIO_FOLDER_PATTERN, sharedItem.getUuid(),
-                getPictureWithFormat(sharedItem.getPictures(), pictureId));
-    }
 
     private String getPictureWithFormat(List<String> pictures, Integer pictureId) {
         if (CollectionUtils.isEmpty(pictures)) {
@@ -207,32 +154,6 @@ public class MinioStorageService {
         }
 
         return String.format(Patterns.PHOTO_FORMAT_PATTERN, userUuid, format);
-    }
-
-    public String constructSharedItemMainPictureUrl(SharedItem sharedItem) {
-        String temp;
-        if (CollectionUtils.isEmpty(sharedItem.getPictures())) {
-            temp = minioProperties.getSharedItemDefaultAvatar();
-        } else {
-            temp = sharedItem.getPictures().get(0);
-        }
-
-        return Extractors.constructSignedUrl(
-                minioProperties.getRedirectionEndPoint(),
-                minioProperties.getItemsPicturesStorageBucket(),
-                String.format(Patterns.MINIO_FOLDER_PATTERN, sharedItem.getUuid(), temp)
-        );
-    }
-
-    public String constructInvoicePictureUrl(Invoice invoice) {
-        return Extractors.constructSignedUrl(
-                minioProperties.getRedirectionEndPoint(),
-                minioProperties.getInvoicesPictureStorageBucket(),
-                String.format(Patterns.MINIO_FOLDER_PATTERN,
-                        invoice.getItem().getUuid(),
-                        String.format(Patterns.PHOTO_FORMAT_PATTERN, invoice.getUuid(), invoice.getPictureFormat())
-                )
-        );
     }
 
 }

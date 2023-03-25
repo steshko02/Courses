@@ -1,16 +1,13 @@
 package com.example.coursach.service;
 
-import com.example.coursach.converters.NotificationConverter;
 import com.example.coursach.dto.notification.NotificationPagedDto;
 import com.example.coursach.dto.notification.NotificationRequestParamsDto;
+import com.example.coursach.entity.notification.Notification;
 import com.example.coursach.exception.notifications.NotificationNotFoundException;
 import com.example.coursach.repository.NotificationRepository;
-import com.example.coursach.service.converter.resolvers.LocalizationResolver;
+import com.example.coursach.service.converter.NotificationConverter;
 import com.example.coursach.service.converter.resolvers.urlresolver.UrlResolver;
-import com.example.coursach.service.model.mail.Notification;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,23 +41,24 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public NotificationPagedDto getAll(NotificationRequestParamsDto paramsDto, String userUuid) {
-        Page<Notification> notifications =
-                notificationRepository.getAllNotificationsOfUser(
-                        userUuid,
-                        PageRequest.of(paramsDto.getPage().getNumber() - 1, paramsDto.getPage().getSize())
-                );
-
-        LocalizationResolver localizationResolver =
-                notificationTitle -> localMessageService.getByCodeId(notificationTitle).getMessage();
-
-        return notificationConverter.bookingsPagedDto(
-                notifications.getTotalPages(),
-                (int) notifications.getTotalElements(),
-                notifications.getNumber(),
-                notifications.getContent(),
-                localizationResolver,
-                urlResolverMap
-        );
+//        Page<Notification> notifications =
+//                notificationRepository.getAllNotificationsOfUser(
+//                        userUuid,
+//                        PageRequest.of(paramsDto.getPage().getNumber() - 1, paramsDto.getPage().getSize())
+//                );
+//
+//        LocalizationResolver localizationResolver =
+//                notificationTitle -> localMessageService.getByCodeId(notificationTitle).getMessage();
+//
+//        return notificationConverter.bookingsPagedDto(
+//                notifications.getTotalPages(),
+//                (int) notifications.getTotalElements(),
+//                notifications.getNumber(),
+//                notifications.getContent(),
+//                localizationResolver,
+//                urlResolverMap
+//        );
+        return null;
     }
 
     @Transactional

@@ -1,7 +1,12 @@
 package com.example.coursach.service.converter.resolvers.urlresolver;
 
-import com.example.coursach.service.model.mail.Notification;
+import com.example.coursach.config.properties.ApplicationUrlProperties;
+import com.example.coursach.controllers.UserController;
+import com.example.coursach.entity.enums.NotificationType;
+import com.example.coursach.entity.notification.UserAcceptInvitationNotification;
+import com.example.coursach.service.MinioStorageService;
 import org.springframework.stereotype.Component;
+import com.example.coursach.entity.notification.Notification;
 
 import java.util.List;
 

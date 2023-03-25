@@ -1,11 +1,13 @@
 package com.example.coursach.service.converter;
 
+import com.example.coursach.config.properties.UserProperties;
 import com.example.coursach.dto.pagable.PagingDtoList;
 import com.example.coursach.dto.security.RegisterConfirmDto;
 import com.example.coursach.dto.security.RegisterRequestDto;
 import com.example.coursach.dto.user.BaseUserInformationDto;
 import com.example.coursach.dto.user.UserPagedDto;
 import com.example.coursach.entity.Profile;
+import com.example.coursach.entity.Role;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.enums.AccountStatus;
 import com.example.coursach.entity.enums.UserRole;
@@ -19,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 @Component
 public class UserConverter {
@@ -37,8 +40,10 @@ public class UserConverter {
     public User toEntity(RegisterRequestDto requestDto, PasswordEncoder passwordEncoder, UserRole userRole) {
         String password = requestDto.getPassword();
         return User.builder()
-                .roles(Set.of(userRole))
+                .roles(Set.of(Role.builder().name(userRole).build()))
                 .accountStatus(null)
+                .firstname(requestDto.getFirstname())
+                .lastname(requestDto.getLastname())
                 .email(requestDto.getEmail())
                 .password(passwordEncoder.encode(password == null ? "" : password))
                 .build();

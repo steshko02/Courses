@@ -1,6 +1,6 @@
 package com.example.coursach.service.converter.resolvers.urlresolver;
 
-import com.example.coursach.service.model.mail.Notification;
+import com.example.coursach.entity.notification.Notification;
 
 import java.util.List;
 

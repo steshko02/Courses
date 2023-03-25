@@ -39,5 +39,5 @@ public class Patterns {
 
     public static final String SERVER_FILE_STORAGE = "%s%s.txt";
 
-    public static final String COOWNING_NAMING_PATTERN = "COOWNING %s";
+    public static final String COURSES_NAMING_PATTERN = "COURSES %s";
 }

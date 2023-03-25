@@ -1,0 +1,3 @@
+Dear {user_name}, the booking of the object ({objectInfo}) will begin in {time_before_booking}.
+
+With best wishes, Co-owning team =)

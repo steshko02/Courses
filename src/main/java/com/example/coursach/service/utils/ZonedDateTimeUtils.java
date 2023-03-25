@@ -1,5 +1,6 @@
 package com.example.coursach.service.utils;
 
+import com.example.coursach.exception.bookings.InvalidDateIntervalException;
 import lombok.experimental.UtilityClass;
 
 import java.time.Clock;

@@ -8,14 +8,14 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.time.ZonedDateTime;
 
-import static com.example.coursach.config.DateTimeConfig.ZONE_DATE_TIME_PATTEN;
+import static com.example.coursach.config.DateTimeFormat.ZONE_DATE_TIME_PATTEN;
 
 @Getter
 @Jacksonized
 @Builder
 public class NotificationDto {
 
-    private final Long id;
+    private final String uuid;
 
     private final String type;
 

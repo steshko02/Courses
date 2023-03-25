@@ -1,11 +1,11 @@
 package com.example.coursach.service.converter;
 
-import com.example.coursach.dto.NotificationDto;
+import com.example.coursach.dto.notification.NotificationDto;
 import com.example.coursach.dto.notification.NotificationPagedDto;
 import com.example.coursach.dto.pagable.PagingDtoList;
 import com.example.coursach.service.converter.resolvers.LocalizationResolver;
 import com.example.coursach.service.converter.resolvers.urlresolver.UrlResolver;
-import com.example.coursach.service.model.mail.Notification;
+import com.example.coursach.entity.notification.Notification;
 import com.example.coursach.service.utils.ZonedDateTimeUtils;
 import org.springframework.stereotype.Component;
 

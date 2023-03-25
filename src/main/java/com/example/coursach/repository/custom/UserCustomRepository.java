@@ -1,7 +1,6 @@
 package com.example.coursach.repository.custom;
 
 import com.example.coursach.entity.User;
-
 import com.example.coursach.entity.enums.AccountStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +19,7 @@ public interface UserCustomRepository {
     Optional<User> findUserByIdWithFetchNotification(String userUuid);
 
     List<User> findAllByIds(List<String> userIds);
+    Optional<User> findUserByEmailExcludedInvitedWithFetchProfile(String email);
 
 
 }

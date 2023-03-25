@@ -11,8 +11,8 @@ import lombok.extern.jackson.Jacksonized;
 public class ReportCreateDto {
     private final Long id;
     private final String answerUrl;
-    private final Long lectorId;
-    private final Long userId;
+    private final String lectorId;
+    private final String userId;
     private final Long workId;
     private final ReportStatus reportStatus;
 }

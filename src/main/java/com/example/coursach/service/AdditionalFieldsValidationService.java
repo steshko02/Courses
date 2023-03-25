@@ -1,26 +1,18 @@
 package com.example.coursach.service;
 
-import com.example.coursach.config.properties.ItemTypeProperties;
-import com.example.coursach.entity.enums.ItemType;
-import com.example.coursach.exception.ErrorCode;
 import com.example.coursach.service.validator.FieldValidator;
 import com.example.coursach.service.validator.model.ValidationType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
 public class AdditionalFieldsValidationService {
 
-    private final ItemTypeProperties itemTypeProperties;
 
     private final Map<ValidationType, FieldValidator> validators;
 
-    public AdditionalFieldsValidationService(ItemTypeProperties itemTypeProperties, Map<ValidationType, FieldValidator> validators) {
-        this.itemTypeProperties = itemTypeProperties;
+    public AdditionalFieldsValidationService(Map<ValidationType, FieldValidator> validators) {
         this.validators = validators;
     }
 

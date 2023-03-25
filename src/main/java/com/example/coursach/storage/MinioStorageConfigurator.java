@@ -1,15 +1,19 @@
 package com.example.coursach.storage;
-
+import com.amazonaws.auth.policy.Policy;
+import com.amazonaws.auth.policy.Principal;
+import com.amazonaws.auth.policy.Resource;
+import com.amazonaws.auth.policy.Statement;
+import com.amazonaws.auth.policy.actions.S3Actions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.example.coursach.config.properties.minio.MinioDataStorageProperties;
 import lombok.SneakyThrows;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.beans.Statement;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.Policy;
-import java.security.Principal;
+
 
 @Component
 public class MinioStorageConfigurator {
@@ -46,11 +50,11 @@ public class MinioStorageConfigurator {
                     getPublicReadPolicy(minioProperties.getItemsPicturesStorageBucket()));
         }
 
-        if (!amazonS3Client.doesBucketExistV2(minioProperties.getInvoicesPictureStorageBucket())) {
-            amazonS3Client.createBucket(minioProperties.getInvoicesPictureStorageBucket());
-            amazonS3Client.setBucketPolicy(minioProperties.getInvoicesPictureStorageBucket(),
-                    getPublicReadPolicy(minioProperties.getInvoicesPictureStorageBucket()));
-        }
+//        if (!amazonS3Client.doesBucketExistV2(minioProperties.getInvoicesPictureStorageBucket())) {
+//            amazonS3Client.createBucket(minioProperties.getInvoicesPictureStorageBucket());
+//            amazonS3Client.setBucketPolicy(minioProperties.getInvoicesPictureStorageBucket(),
+//                    getPublicReadPolicy(minioProperties.getInvoicesPictureStorageBucket()));
+//        }
 
 
         if (!Files.exists(Path.of(minioProperties.getServerStorageDirectory()))) {
