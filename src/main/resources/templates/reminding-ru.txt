@@ -1,0 +1,3 @@
+Уважаемый {user_name}, бронирование объекта ({model}, {serial number} / {address}, {location}) начнется через {time_before_booking} часов.
+
+С наилучшими пожеланиями, команда совладельцев =)

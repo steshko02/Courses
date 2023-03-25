@@ -1,8 +1,8 @@
 package com.example.coursach.service.model.mail.template;
 
-import eu.senla.git.coowning.service.EmailSenderService;
-import eu.senla.git.coowning.service.model.mail.Notification;
-import eu.senla.git.coowning.service.model.mail.enums.MailScope;
+import com.example.coursach.service.EmailSenderService;
+import com.example.coursach.service.model.mail.Notification;
+import com.example.coursach.service.model.mail.enums.MailScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 

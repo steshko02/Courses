@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Validated
 @ConstructorBinding
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "regex")
+@ConfigurationProperties(prefix = "app.regex")
 public class RegexProperties {
 
     @NotBlank

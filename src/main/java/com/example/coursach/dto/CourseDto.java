@@ -10,7 +10,7 @@ import lombok.extern.jackson.Jacksonized;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static com.example.coursach.config.DateTimeConfig.ZONE_DATE_TIME_PATTEN;
+import static com.example.coursach.config.DateTimeFormat.ZONE_DATE_TIME_PATTEN;
 
 @Getter
 @Builder

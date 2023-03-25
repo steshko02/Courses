@@ -1,0 +1,105 @@
+#server:
+#  port: ${SERVER_PORT:0}
+#
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/coowningDb
+#    username: user
+#    password: 123
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#  liquibase:
+#    change-log: classpath:db/changelog/changelog-master.xml
+#  jpa:
+#    open-in-view: false
+#    show-sql: false
+#    properties:
+#      hibernate.format_sql: true
+#  mail:
+#    host: "smtp.yandex.com"
+#    port: 587
+#    username: "senlacourses@yandex.by"
+#    password: "sxjoqeyylykiyodu"
+#    protocol: "smtp"
+#    properties:
+#      mail:
+#        smtp:
+#          starttls:
+#            enable: true
+#          auth: true
+#
+#app:
+#jwt:
+#  secret-word: megaSecretWordInTheWorld
+#  hours: 1
+#  prefix: "Bearer "
+#  access-token-key: Authorization
+#
+#regex:
+#  password: ^(?=.*[0-9])(?=.*[a-zа-я])(?=.*[A-ZА-Я])(?=.*[№%!@#&()–[{}]:;',?/*~$^+=<>]).{9,254}$
+##  Password must contain at least one digit [0-9].
+##  Password must contain at least one lowercase Latin character [a-z] or [а-я].
+##  Password must contain at least one uppercase Latin character [A-Z] or [А-Я].
+##  Password must contain at least one special character like ! @ # & ( ).
+##  Password must contain a length of at least 9 characters and a maximum of 254 characters.
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#  endpoint:
+#    health:
+#      show-details: always
+#
+#
+#springdoc:
+#  show-login-endpoint: true
+#
+#user:
+#  default-name: user
+#  default-password: password
+#
+#invoices:
+#  invoices-interval-max-duration: P50D
+#
+#mail:
+#  locale-postfix: "{locale}"
+#  templates-location: "__static/mail/templates/"
+#  mail-from: "coowningnoreply@gmail.com"
+#
+#minio:
+#  server:
+#    signer-override: "AWSS3V4SignerType"
+#    end-point: ${MINIO_URL:http://localhost:9000}
+#    access-key: "accesskey"
+#    secret-key: "secretkey"
+#    maximum-file-size: "5120KB"
+#    connection-timeout: 10000
+#    request-timeout: 10000
+#  storage:
+#    shared-item-default-avatar: "default"
+#    shared-item-pictures-limit: 10
+#    items-pictures-storage-bucket: "coowning-shared-items-pictures"
+#    invoices-picture-storage-bucket: "coowning-invoices-pictures"
+#    user-avatars-bucket: "coowning-avatars"
+#    redirection-end-point: ${MINIO_REP:http://localhost:9000}
+#    server-storage-directory: ${SERVER_STORAGE_DIRECTORY:/photos}
+#    avatars-directory-path: ${AVATARS_DIRECTORY_PATH:/photos/}
+#    invoices-directory-path: ${INVOICES_DIRECTORY_PATH:../photos/}
+#    default-user-avatar: "default"
+#    allowed-photo-formats:
+#      - "jpg"
+#      - "jpeg"
+#      - "png"
+#      - "jp2"
+#      - "HEIF"
+#
+#reminders:
+#  cron: "0 */4 * ? * *"
+#  period: 3
+#
+#notification:
+#  cron: "0 * * ? * *"
+#  month-age: 6

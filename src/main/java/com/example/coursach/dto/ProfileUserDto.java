@@ -21,5 +21,5 @@ public class ProfileUserDto {
 
     private final String githubUrl;
 
-    private final Long userId;
+    private final String userId;
 }

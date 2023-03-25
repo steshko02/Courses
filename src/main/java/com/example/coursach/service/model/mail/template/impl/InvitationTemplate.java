@@ -1,13 +1,13 @@
 package com.example.coursach.service.model.mail.template.impl;
 
-import eu.senla.git.coowning.config.properties.MailProperties;
-import eu.senla.git.coowning.entity.message.MessageLocale;
-import eu.senla.git.coowning.service.model.mail.InvitationNotification;
-import eu.senla.git.coowning.service.model.mail.Notification;
-import eu.senla.git.coowning.service.model.mail.enums.MailScope;
-import eu.senla.git.coowning.service.model.mail.template.MailTemplate;
-import eu.senla.git.coowning.service.model.mail.utils.TemplateUtils;
-import eu.senla.git.coowning.storage.pattern.Patterns;
+import com.example.coursach.config.properties.MailProperties;
+import com.example.coursach.entity.message.MessageLocale;
+import com.example.coursach.service.model.mail.InvitationNotification;
+import com.example.coursach.service.model.mail.Notification;
+import com.example.coursach.service.model.mail.enums.MailScope;
+import com.example.coursach.service.model.mail.template.MailTemplate;
+import com.example.coursach.service.model.mail.utils.TemplateUtils;
+import com.example.coursach.storage.pattern.Patterns;
 import lombok.Getter;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
@@ -66,7 +66,7 @@ public class InvitationTemplate implements MailTemplate {
     private SimpleMailMessage buildSimpleMailMessage() {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(mailProperties.getMailFrom());
-        simpleMailMessage.setSubject(String.format(Patterns.COOWNING_NAMING_PATTERN, "INVITATION"));
+        simpleMailMessage.setSubject(String.format(Patterns.COURSES_NAMING_PATTERN, "INVITATION"));
 
         return simpleMailMessage;
     }

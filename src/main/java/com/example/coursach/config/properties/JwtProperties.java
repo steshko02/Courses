@@ -15,7 +15,7 @@ import java.util.Base64;
 @Validated
 @ConstructorBinding
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "jwt")
+@ConfigurationProperties(prefix = "app.jwt")
 public class JwtProperties {
 
     @NotBlank

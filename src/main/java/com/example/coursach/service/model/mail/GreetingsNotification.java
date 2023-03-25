@@ -1,7 +1,7 @@
 package com.example.coursach.service.model.mail;
 
-import eu.senla.git.coowning.entity.message.MessageLocale;
-import eu.senla.git.coowning.service.model.mail.enums.MailScope;
+import com.example.coursach.entity.message.MessageLocale;
+import com.example.coursach.service.model.mail.enums.MailScope;
 import lombok.Getter;
 import lombok.Setter;
 

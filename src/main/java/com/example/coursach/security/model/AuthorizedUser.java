@@ -11,8 +11,8 @@ public class AuthorizedUser extends User {
 
     private final String uuid;
 
-    public AuthorizedUser(String username, String password, String uuid, Collection<? extends GrantedAuthority> authorities) {
+    public AuthorizedUser(String username, String password, String id, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
-        this.uuid = uuid;
+        this.uuid = id;
     }
 }

@@ -12,7 +12,9 @@ import javax.validation.constraints.NotBlank;
 @Jacksonized
 @Builder
 public class ResendCodeRequestDto {
+
     @NotBlank(message = ErrorCode.WEAK_EMAIL)
     @Email(message = ErrorCode.WEAK_EMAIL)
     private final String email;
+
 }

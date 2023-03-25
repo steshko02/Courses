@@ -1,45 +1,59 @@
 package com.example.coursach.service;
 
-import com.example.coursach.converters.ProfileConverter;
-import com.example.coursach.dto.ProfileUserDto;
+import com.example.coursach.dto.profile.CreateProfileDto;
+import com.example.coursach.dto.profile.ProfileInfoDto;
+import com.example.coursach.dto.profile.UpdateProfileDto;
 import com.example.coursach.entity.Profile;
-import com.example.coursach.entity.User;
+import com.example.coursach.exception.profile.ProfileAlreadyExistException;
+import com.example.coursach.exception.profile.ProfileNotFoundException;
+import com.example.coursach.exception.user.UserNotFoundException;
 import com.example.coursach.repository.ProfileRepository;
 import com.example.coursach.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import com.example.coursach.service.converter.ProfileConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class ProfileService {
 
-    private final ProfileConverter profileConverter;
     private final ProfileRepository profileRepository;
+
+    private final ProfileConverter profileConverter;
+
     private final UserRepository userRepository;
 
-    public Long createProfile(ProfileUserDto profileUserDto) {
-
-        User user = userRepository.findById(profileUserDto.getUserId())
-                .orElseThrow(RuntimeException::new);
-
-        Profile save = profileConverter.toEntity(profileUserDto);
-
-        user.setProfile(save);
-       return userRepository.save(user).getProfile().getId();
+    public ProfileService(ProfileRepository profileRepository,
+                          ProfileConverter profileConverter,
+                          UserRepository userRepository) {
+        this.profileRepository = profileRepository;
+        this.profileConverter = profileConverter;
+        this.userRepository = userRepository;
     }
 
-    public void update(ProfileUserDto profileUserDto) {
-        User user = userRepository.findById(profileUserDto.getUserId())
-                .orElseThrow(RuntimeException::new);
+    @Transactional
+    public void createProfile(CreateProfileDto profileDto, String authorizedUserUuid) {
+        if (profileRepository.findById(authorizedUserUuid).isPresent()) {
+            throw new ProfileAlreadyExistException();
+        }
 
-        Profile newProfile = profileConverter.toEntity(profileUserDto);
-        newProfile.setId(profileUserDto.getId());
-        user.setProfile(newProfile);
-        userRepository.save(user);
-        profileRepository.save(newProfile);
+        Profile profile = profileConverter.toEntity(profileDto);
+        profile.setUser(
+                userRepository.findById(authorizedUserUuid).orElseThrow(UserNotFoundException::new)
+        );
+        profileRepository.save(profile);
     }
 
-    public ProfileUserDto getById(Long id) {
-       return profileConverter.toDto(profileRepository.findById(id).get());
+    @Transactional
+    public void updateProfile(UpdateProfileDto profileDto, String authorizedUserUuid) {
+        Profile profile = profileRepository.findById(authorizedUserUuid).orElseThrow(ProfileNotFoundException::new);
+        profile.setNickname(profileDto.getNickname());
+        profileRepository.save(profile);
     }
+
+    @Transactional(readOnly = true)
+    public ProfileInfoDto getProfile(String authorizedUserUuid) {
+        Profile profile = profileRepository.findById(authorizedUserUuid).orElseThrow(ProfileNotFoundException::new);
+        return profileConverter.toDto(profile);
+    }
+
 }

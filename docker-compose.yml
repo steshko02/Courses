@@ -13,5 +13,41 @@ services:
     volumes:
       - shared_volume:/home/app/db
 
+  minio:
+    image: 'bitnami/minio:2020.2.20'
+    ports:
+      - '9000:9000'
+    container_name: minio
+    environment:
+      - TZ=UTC
+      - MINIO_ACCESS_KEY=${MINIO_AK:-accesskey}
+      - MINIO_SECRET_KEY=${MINIO_SK:-secretkey}
+
+#  app:
+#   image: 'eu-senls-courses:latest'
+#   build: ./
+#   ports:
+#     - "8080:8080"
+#   container_name: app
+#   restart: on-failure
+#   depends_on:
+#     - db
+#     - minio
+#   environment:
+#     - TZ=UTC
+#     - SPRING_PROFILES_ACTIVE=local-run,log-loki
+#     - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/coowningDb
+#     - SPRING_DATASOURCE_USERNAME=${DB_USER:-user}
+#     - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-123}
+#     - SERVER_PORT=8080
+#     - MINIO_SERVER_ACCESS_KEY=${MINIO_AK:-accesskey}
+#     - MINIO_SERVER_SECRET_KEY=${MINIO_SK:-secretkey}
+#     - MINIO_URL=http://minio:9000
+#     - CONFIG_SERVER_ENABLED=false
+#     - LOG_PATH=/logs
+#     - MINIO_REP=http://localhost:9000
+#   volumes:
+#     - shared_volume:/home/app/db
+
 volumes:
   shared_volume:

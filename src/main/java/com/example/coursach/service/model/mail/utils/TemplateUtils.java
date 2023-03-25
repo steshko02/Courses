@@ -1,9 +1,9 @@
 package com.example.coursach.service.model.mail.utils;
 
-import eu.senla.git.coowning.config.properties.MailProperties;
-import eu.senla.git.coowning.entity.message.MessageLocale;
-import eu.senla.git.coowning.service.model.mail.enums.MailScope;
-import eu.senla.git.coowning.storage.pattern.Patterns;
+import com.example.coursach.config.properties.MailProperties;
+import com.example.coursach.entity.message.MessageLocale;
+import com.example.coursach.service.model.mail.enums.MailScope;
+import com.example.coursach.storage.pattern.Patterns;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.ClassPathResource;

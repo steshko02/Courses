@@ -1,0 +1,7 @@
+Dear {user_name}, we detected an attempt of password recovery using your email. If You think somebody tried to log in to your Co-owning account against your will, you can connect Co-owning Support Team (тут мб сделаем линку на наш саппорт)
+
+If It was you, enter the code below in the appropriate form in the Co-owning application.
+
+Code - {6_digital_code}
+
+With best wishes, Co-owning team =)
