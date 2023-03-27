@@ -19,11 +19,14 @@ public class Patterns {
      */
     public static final String PHOTO_FORMAT_PATTERN = "%s.%s";
 
+
+    public static final String CONTENT_FORMAT_PATTERN = "%s.%s";
     /**
      * Minio folder pattern
      * Usage example: used for construct url with folder
      */
     public static final String MINIO_FOLDER_PATTERN = "%s/%s";
+    public static final String MINIO_FOLDER_PATTERN_WITH_FILENAME = "%s/%s.%s";
 
     /**
      * Link format pattert<br/>

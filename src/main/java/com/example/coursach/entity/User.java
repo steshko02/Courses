@@ -1,9 +1,7 @@
 package com.example.coursach.entity;
 
 import com.example.coursach.entity.converters.AccountStatusConverter;
-import com.example.coursach.entity.converters.UserStatusConverter;
 import com.example.coursach.entity.enums.AccountStatus;
-import com.example.coursach.entity.enums.UserStatus;
 import com.example.coursach.entity.notification.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
