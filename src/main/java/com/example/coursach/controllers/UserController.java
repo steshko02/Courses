@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,14 +24,30 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("{userUuid}")
-    public BaseUserInformationDto getBaseUserInformation(@PathVariable String userUuid) {
-        return userService.getBaseUserInformation(userUuid);
-    }
+//    @GetMapping("{userUuid}")
+//    public BaseUserInformationDto getBaseUserInformation(@PathVariable String userUuid) {
+//        return userService.(userUuid);
+//    }
 
-    @GetMapping
-    public UserPagedDto getAll(@Valid PageableRequestDto pageableRequestDto,
+    @GetMapping("/pagination")
+    public UserPagedDto getAllWithPagination(@Valid PageableRequestDto pageableRequestDto,
                                @RequestParam(defaultValue = StringUtils.EMPTY) String query) {
         return userService.getAll(pageableRequestDto, query);
     }
+
+    @GetMapping
+    public List<BaseUserInformationDto> getAll() {
+        return userService.getAll();
+    }
+
+    @GetMapping("/mentors/{id}")
+    public List<BaseUserInformationDto> getMentorsOnCourse(@PathVariable("id") Long id) {
+        return userService.getMentorsOnCourse(id);
+    }
+
+    @GetMapping("/mentors/lesson/{id}")
+    public List<BaseUserInformationDto> getMentorsOnLesson(@PathVariable("id") Long lessonId) {
+        return userService.getMentorsOnLesson(lessonId);
+    }
+
 }

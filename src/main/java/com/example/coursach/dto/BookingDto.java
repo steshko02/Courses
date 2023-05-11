@@ -1,5 +1,7 @@
 package com.example.coursach.dto;
 
+import com.example.coursach.dto.user.BaseUserInformationDto;
+import com.example.coursach.dto.user.UserDto;
 import com.example.coursach.entity.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
@@ -14,12 +16,14 @@ import static com.example.coursach.config.DateTimeFormat.ZONE_DATE_TIME_PATTEN;
 @Jacksonized
 public class BookingDto {
 
-    private final String userId;
-    private final Long courseId;
+    private final Long id;
 
     @JsonFormat(pattern = ZONE_DATE_TIME_PATTEN)
     private final ZonedDateTime dateCreation;
 
     private final BookingStatus status;
+
+    private CourseShortInfoDto course;
+    private BaseUserInformationDto user;
 
 }

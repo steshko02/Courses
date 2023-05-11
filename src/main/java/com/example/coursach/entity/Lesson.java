@@ -1,12 +1,14 @@
 package com.example.coursach.entity;
 
 import com.example.coursach.entity.converters.CourseStatusConverter;
+import com.example.coursach.entity.converters.LocalDateTimeConverter;
 import com.example.coursach.entity.enums.TimeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.compress.utils.Lists;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,8 +19,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,15 +49,23 @@ public class Lesson {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "sourceurl")
-    private String sourceUrl;
+    @Column(name = "order_")
+    private Integer order;
 
-    @Column(name = "duration")
-    private Integer duration;
+    @Convert(converter = LocalDateTimeConverter.class)
+    @Column(name = "date_start", nullable = true)
+    private LocalDateTime start;
 
-    @JoinColumn(name = "resourceid")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
-    private Resource resource;
+    @Convert(converter = LocalDateTimeConverter.class)
+    @Column(name = "date_end", nullable = true)
+    private LocalDateTime end;
+
+    @JoinColumn(name = "work_id")
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy = "lesson")
+    private Work work;
 
     @JoinColumn(name = "courseid")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -56,4 +74,13 @@ public class Lesson {
     @Convert(converter = CourseStatusConverter.class)
     @Column(name = "status", nullable = false)
     private TimeStatus status;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "lessons_mentors",
+            joinColumns = @JoinColumn(name = "lesson_id"),
+            inverseJoinColumns = @JoinColumn(name = "mentors_id")
+    )
+    private List<User> mentors;
+
 }

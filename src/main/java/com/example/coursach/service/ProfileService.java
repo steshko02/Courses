@@ -46,7 +46,8 @@ public class ProfileService {
     @Transactional
     public void updateProfile(UpdateProfileDto profileDto, String authorizedUserUuid) {
         Profile profile = profileRepository.findById(authorizedUserUuid).orElseThrow(ProfileNotFoundException::new);
-        profile.setNickname(profileDto.getNickname());
+        profile = profileConverter.toEntity(profileDto);
+
         profileRepository.save(profile);
     }
 

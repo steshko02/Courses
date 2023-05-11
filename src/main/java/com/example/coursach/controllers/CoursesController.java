@@ -1,10 +1,16 @@
 package com.example.coursach.controllers;
 
 import com.example.coursach.dto.CourseDto;
-import com.example.coursach.dto.ProfileUserDto;
+import com.example.coursach.dto.CourseDtoWithMentors;
+import com.example.coursach.dto.PaginationCoursesDto;
+import com.example.coursach.dto.picture.StatusDto;
+import com.example.coursach.entity.enums.FilterBy;
+import com.example.coursach.security.model.AuthorizedUser;
 import com.example.coursach.service.CourseService;
+import com.example.coursach.service.MinioStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,25 +18,48 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("courses")
 public class CoursesController {
     private final CourseService courseService;
+    private final MinioStorageService minioStorageService;
 
     @PostMapping
     public Long createCourse(@RequestBody CourseDto courseDto) {
        return courseService.createCourse(courseDto);
     }
 
+    @PostMapping("/picture")
+    public StatusDto uploadPicture(@RequestParam("file") MultipartFile picture, @RequestParam("courseId") Long id) {
+        return  minioStorageService.uploadCourseObj(picture,id);
+    }
+
     @GetMapping("/{id}")
     @ResponseBody
-    public CourseDto get(@PathVariable("id") Long id) {
-        return courseService.getById(id);
+    public CourseDtoWithMentors get(@PathVariable("id") Long id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return courseService.getById(id,authorizedUser.getUuid());
+    }
+
+    @GetMapping("/all")
+    @ResponseBody
+    public PaginationCoursesDto getAll(@RequestParam("number") Integer number, @RequestParam("size") Integer size) {
+        return courseService.getAllWithPagination(number,size);
+    }
+
+
+    @GetMapping("filter/{filter}")
+    @ResponseBody
+    public PaginationCoursesDto getByFiltering(@RequestParam("number") Integer number,
+                                    @RequestParam("size") Integer size,
+                                    @PathVariable("filter") String filter) {
+        return courseService.getAllWithPaginationWithFiltering(number,size,FilterBy.valueOf(filter));
     }
 
     @PutMapping

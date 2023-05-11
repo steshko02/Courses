@@ -13,8 +13,7 @@ public class BaseUserInformationDto {
 
     private final String email;
 
-    private final String nickname;
+    private final String firstname;
 
-    private final String avatarUrl;
-
+    private final String lastname;
 }

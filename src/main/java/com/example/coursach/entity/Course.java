@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,12 +50,14 @@ public class Course {
     @Column(name = "status", nullable = false)
     private TimeStatus status;
 
-    @Convert(converter = CourseTypeConverter.class)
-    @Column(name = "type", nullable = false)
-    private CourseType type;
+    @Column(name = "count")
+    private Integer count;
 
     @Column(name = "size")
     private Integer size;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Resource resources;
 
     @Convert(converter = LocalDateTimeConverter.class)
     @Column(name = "date_start", nullable = false)
@@ -63,9 +67,6 @@ public class Course {
     @Column(name = "date_end", nullable = false)
     private LocalDateTime end;
 
-    @OneToMany(mappedBy = "course")
-    private List<CourseUser> joinUsers;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = CascadeType.ALL)
     private List<Lesson> lessons;
 }

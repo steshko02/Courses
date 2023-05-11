@@ -89,11 +89,8 @@ app:
         - "png"
         - "jp2"
         - "HEIF"
-
-  reminders:
-    cron: "0 */4 * ? * *"
-    period: 3
-
   notification:
     cron: "0 * * ? * *"
     month-age: 6
+status:
+  cron: "0 */10 * * * *"

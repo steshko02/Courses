@@ -49,23 +49,23 @@ public class UserConverter {
                 .build();
     }
 
-    public BaseUserInformationDto userToBaseUserInformationDto(User user, UserPictureUrlResolver urlMapperFunction) {
+    public BaseUserInformationDto userToBaseUserInformationDto(User user) {
         Profile profile = ProfileConverter.getProfileOrEmptyProfile(user);
         return BaseUserInformationDto.builder()
                 .uuid(user.getId())
                 .email(user.getEmail())
-                .nickname(profile.getNickname())
-                .avatarUrl(urlMapperFunction.getPictureUrlByUser(user))
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
                 .build();
     }
 
     public List<BaseUserInformationDto> listUserToListBaseUserInformationDto(
-            List<User> userList, UserPictureUrlResolver urlMapperFunction) {
+            List<User> userList) {
         if (CollectionUtils.isEmpty(userList)) {
             return Collections.emptyList();
         }
         return userList.stream()
-                .map(user -> userToBaseUserInformationDto(user, urlMapperFunction))
+                .map(this::userToBaseUserInformationDto)
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +79,7 @@ public class UserConverter {
                         .totalCount((int) pagedResult.getTotalElements())
                         .pageNumber(pagedResult.getNumber() + 1)
                         .build())
-                .users(listUserToListBaseUserInformationDto(userList, urlMapperFunction)).build();
+                .users(listUserToListBaseUserInformationDto(userList)).build();
     }
 
 }

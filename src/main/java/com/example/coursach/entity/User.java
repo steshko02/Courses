@@ -1,9 +1,7 @@
 package com.example.coursach.entity;
 
 import com.example.coursach.entity.converters.AccountStatusConverter;
-import com.example.coursach.entity.converters.UserStatusConverter;
 import com.example.coursach.entity.enums.AccountStatus;
-import com.example.coursach.entity.enums.UserStatus;
 import com.example.coursach.entity.notification.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,16 +65,13 @@ public class User {
     @OneToOne(mappedBy = "requested", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     private Code code;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "roleid")
     )
     private Set<Role> roles = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
-    private List<CourseUser> joinCourses;
 
     @ManyToMany(mappedBy = "users")
     private Set<Notification> notifications;

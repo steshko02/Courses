@@ -7,12 +7,16 @@ import com.example.coursach.dto.user.PasswordSettingRequestDto;
 import com.example.coursach.dto.user.RecoveryRequestDto;
 import com.example.coursach.dto.user.UserPagedDto;
 import com.example.coursach.entity.Code;
+import com.example.coursach.entity.CourseUser;
+import com.example.coursach.entity.Lesson;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.enums.AccountStatus;
 import com.example.coursach.exception.user.InvalidCodeException;
 import com.example.coursach.exception.user.UserNotFoundException;
 import com.example.coursach.exception.user.WeakPasswordException;
 import com.example.coursach.repository.CodeRepository;
+import com.example.coursach.repository.CourseUserRepository;
+import com.example.coursach.repository.LessonRepository;
 import com.example.coursach.repository.UserRepository;
 import com.example.coursach.service.converter.UserConverter;
 import com.example.coursach.service.model.LocalMessageCodes;
@@ -28,6 +32,9 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -51,6 +58,9 @@ public class UserService {
     private final EmailSenderService postman;
 
     private final Clock systemClock;
+    private final CourseUserRepository courseUserRepository;
+    private final LessonRepository lessonRepository;
+
 
     //CHECKSTYLE:OFF
     public UserService(
@@ -63,7 +73,7 @@ public class UserService {
             UserRepository userRepository,
             UserConverter userConverter,
             EmailSenderService postman,
-            Clock systemClock) {
+            Clock systemClock, CourseUserRepository courseUserRepository, LessonRepository lessonRepository) {
         this.currentUserRequestLocaleService = currentUserRequestLocaleService;
         this.minioStorageService = minioStorageService;
         this.registrationService = registrationService;
@@ -74,6 +84,8 @@ public class UserService {
         this.userConverter = userConverter;
         this.systemClock = systemClock;
         this.postman = postman;
+        this.courseUserRepository = courseUserRepository;
+        this.lessonRepository = lessonRepository;
     }
     //CHECKSTYLE:ON
 
@@ -83,11 +95,15 @@ public class UserService {
         return userConverter.userPagedResultToUserPagedDto(users, minioStorageService::getPictureUrl);
     }
 
-    public BaseUserInformationDto getBaseUserInformation(String userUuid) {
-        User currentUser = userRepository.findUserByIdWithFetchProfile(userUuid)
-                .orElseThrow(UserNotFoundException::new);
-        return userConverter.userToBaseUserInformationDto(currentUser, minioStorageService::getPictureUrl);
+    public List<BaseUserInformationDto> getAll() {
+        return userConverter.listUserToListBaseUserInformationDto(userRepository.findAll());
     }
+
+//    public BaseUserInformationDto getBaseUserInformation(String userUuid) {
+//        User currentUser = userRepository.findUserByIdWithFetchProfile(userUuid)
+//                .orElseThrow(UserNotFoundException::new);
+//        return userConverter.userToBaseUserInformationDto(currentUser, minioStorageService::getPictureUrl);
+//    }
 
     public StatusDto passwordRecovery(RecoveryRequestDto recoveryRequestDto) {
         User currentUser = userRepository.findUserByEmailExcludedInvitedWithFetchProfile(recoveryRequestDto.getEmail())
@@ -146,4 +162,20 @@ public class UserService {
                 .build();
     }
 
+    public List<BaseUserInformationDto> getMentorsOnCourse(Long id) {
+        List<CourseUser> allByUserCourseIdCourseId = courseUserRepository.findById_CourseId(id);
+
+        List<User> users = userRepository.
+                findAllByIds(allByUserCourseIdCourseId.stream()
+                        .map(x->x.getId().getUserId()).collect(Collectors.toList()));
+
+       return userConverter.listUserToListBaseUserInformationDto(users);
+    }
+
+    public List<BaseUserInformationDto> getMentorsOnLesson(Long lessonId) {
+
+        Optional<Lesson> byId = lessonRepository.findById(lessonId);
+
+        return userConverter.listUserToListBaseUserInformationDto(byId.get().getMentors());
+    }
 }

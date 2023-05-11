@@ -21,8 +21,6 @@ public class BookingConverter {
 
     public BookingDto toDto(Booking booking) {
         return BookingDto.builder()
-                .courseId(booking.getCourse().getId())
-                .userId(booking.getUser().getId())
                 .status(booking.getStatus())
                 .dateCreation(booking.getDateCreation().atZone(ZoneId.systemDefault()))
                 .build();
