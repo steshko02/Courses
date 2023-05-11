@@ -13,4 +13,12 @@ public class ProfileInfoDto {
 
     private final String photoUrl;
 
+    private final String department;
+
+    private final String githubUrl;
+
+    private final String jobTitle;
+
+    private final String other;
+
 }

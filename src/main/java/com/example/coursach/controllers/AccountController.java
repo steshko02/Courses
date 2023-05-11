@@ -6,6 +6,7 @@ import com.example.coursach.dto.security.RegisterConfirmDto;
 import com.example.coursach.dto.security.RegisterRequestDto;
 import com.example.coursach.dto.user.PasswordSettingRequestDto;
 import com.example.coursach.dto.user.RecoveryRequestDto;
+import com.example.coursach.dto.user.security.JwtResponseDto;
 import com.example.coursach.service.RegistrationService;
 import com.example.coursach.service.UserService;
 import com.example.coursach.service.model.RegistrationResult;
@@ -45,10 +46,11 @@ public class AccountController {
     }
 
     @PostMapping(REGISTRATION_PATH + "/confirm")
-    public ResponseEntity<String> confirm(@Valid @RequestBody RegisterConfirmDto registerDto, HttpServletResponse response) {
+    public ResponseEntity<JwtResponseDto> confirm(@Valid @RequestBody RegisterConfirmDto registerDto, HttpServletResponse response) {
         RegistrationResult registrationResult = registrationService.confirm(registerDto);
         response.addHeader(jwtProperties.getAccessTokenKey(), registrationResult.getAuthenticationToken());
-        return new ResponseEntity<>(HttpStatus.OK);
+        JwtResponseDto build = JwtResponseDto.builder().jwt(registrationResult.getAuthenticationToken()).build();
+        return new ResponseEntity<>(build,HttpStatus.OK);
     }
 
     @PostMapping("/recovery-password")

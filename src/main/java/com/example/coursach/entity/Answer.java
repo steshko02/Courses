@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
@@ -30,22 +31,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "works")
-public class Work {
+@Table(name = "answers")
+public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "description")
-    private String description;
-
-    @Convert(converter = LocalDateTimeConverter.class)
-    @Column(name = "deadline", nullable = false)
-    private LocalDateTime deadline;
+    @Column(name = "comment")
+    private String comment;
 
     @Convert(converter = CourseStatusConverter.class)
     @Column(name = "status", nullable = false)
@@ -54,12 +48,13 @@ public class Work {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Resource> resources;
 
-    @OneToOne (cascade = CascadeType.PERSIST)
-    private Lesson lesson;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Work work;
 
-    @PreRemove
-    public void remove(){
-        lesson.setWork(null);
-    }
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private User user;
 
+    @Convert(converter = LocalDateTimeConverter.class)
+    @Column(name = "date_creation") 
+    private LocalDateTime dateCreation;
 }

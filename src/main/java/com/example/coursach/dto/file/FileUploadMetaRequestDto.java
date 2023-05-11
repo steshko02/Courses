@@ -15,9 +15,9 @@ public class FileUploadMetaRequestDto {
     private String extension;
 
     @NotEmpty
-    private String lessonId;
+    private Long lessonId;
 
     @NotEmpty
-    private String courseId;
+    private Long courseId;
 
 }

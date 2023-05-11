@@ -14,6 +14,7 @@ import com.example.coursach.service.validator.model.ValidationType;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
@@ -24,6 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Configuration
+@EnableScheduling
 @EnableConfigurationProperties({
         JwtProperties.class,
         RegexProperties.class,

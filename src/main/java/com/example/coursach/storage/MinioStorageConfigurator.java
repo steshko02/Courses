@@ -50,12 +50,23 @@ public class MinioStorageConfigurator {
                     getPublicReadPolicy(minioProperties.getItemsPicturesStorageBucket()));
         }
 
-//        if (!amazonS3Client.doesBucketExistV2(minioProperties.getInvoicesPictureStorageBucket())) {
-//            amazonS3Client.createBucket(minioProperties.getInvoicesPictureStorageBucket());
-//            amazonS3Client.setBucketPolicy(minioProperties.getInvoicesPictureStorageBucket(),
-//                    getPublicReadPolicy(minioProperties.getInvoicesPictureStorageBucket()));
-//        }
+        String courses = "courses";
+        if (!amazonS3Client.doesBucketExistV2(courses)) {
+            amazonS3Client.createBucket(courses);
+            amazonS3Client.setBucketPolicy(courses, getPublicReadPolicy(courses));
+        }
 
+        String lesson = "lesson";
+        if (!amazonS3Client.doesBucketExistV2(lesson)) {
+            amazonS3Client.createBucket(lesson);
+            amazonS3Client.setBucketPolicy(lesson, getPublicReadPolicy(lesson));
+        }
+
+        String answer = "answer";
+        if (!amazonS3Client.doesBucketExistV2(answer)) {
+            amazonS3Client.createBucket(answer);
+            amazonS3Client.setBucketPolicy(answer, getPublicReadPolicy(answer));
+        }
 
         if (!Files.exists(Path.of(minioProperties.getServerStorageDirectory()))) {
             Files.createDirectory(Path.of(minioProperties.getServerStorageDirectory()));
@@ -71,9 +82,5 @@ public class MinioStorageConfigurator {
                                 String.format("arn:aws:s3:::%s/*", bucketName))));
         return bucketPolicy.toJson();
     }
-    /*Unused method. Problem solve when UX/UI will provide default user avatar.
-    private File getDefaultAvatarFileObject(String path) throws IOException {
 
-        return resourceLoader.getResource(String.format("classpath:%s", path)).getFile();
-    }*/
 }

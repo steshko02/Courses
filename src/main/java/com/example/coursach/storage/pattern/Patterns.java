@@ -27,6 +27,8 @@ public class Patterns {
      */
     public static final String MINIO_FOLDER_PATTERN = "%s/%s";
     public static final String MINIO_FOLDER_PATTERN_WITH_FILENAME = "%s/%s.%s";
+    public static final String MINIO_FOLDER_PATTERN_FOR_LESSON = "%s/%s/%s.%s"; // /courseid/lessonid/video/id
+
 
     /**
      * Link format pattert<br/>

@@ -16,7 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -39,8 +46,13 @@ public class JwtTokenProvider {
                         .atZone(ZoneId.systemDefault())
                         .toInstant());
 
+        List<String> list = new ArrayList<>();
+        userDetails.getAuthorities().forEach(u->list.add(u.getAuthority()));
+        Map<String, Object> roles = new HashMap<>();
+        roles.put("roles",list);
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .addClaims(roles)
                 .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
                 .compact();

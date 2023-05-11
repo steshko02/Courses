@@ -9,6 +9,7 @@ import com.example.coursach.storage.pattern.Patterns;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -25,6 +26,8 @@ public class FileLoaderService {
 
     private final MinioDataStorageProperties minioProperties;
 
+    public static final String MINIO_FOLDER_PATTERN_FOR_LESSON = "%s/%s/%s/%s.%s"; // /courseid/lessonid/video/id
+
     public String createUploadUrl(FileUploadMetaRequestDto requestDto) {
 
         Calendar calendar = Calendar.getInstance();
@@ -32,12 +35,12 @@ public class FileLoaderService {
         calendar.add(Calendar.MINUTE,5);
 
         return s3Client.generatePresignedUrl(
-                minioProperties.getUserAvatarsBucket() ,
-                createFilePath(requestDto.getCourseId(),requestDto.getLessonId(),requestDto.getExtension()),
+                "lesson" ,
+                createFilePath(requestDto.getCourseId(),requestDto.getLessonId(),"video", requestDto.getExtension()),
                 calendar.getTime(), HttpMethod.PUT).toString();
     }
 
-    private String createFilePath(String folderName, String filename, String extension){
-        return String.format(MINIO_FOLDER_PATTERN_WITH_FILENAME, folderName, filename, extension);
+    private String createFilePath(@NotEmpty Long course, @NotEmpty Long lessname, @NotEmpty String filename, String extension){
+        return String.format(MINIO_FOLDER_PATTERN_FOR_LESSON, course, lessname, "videos", filename, extension);
     }
 }

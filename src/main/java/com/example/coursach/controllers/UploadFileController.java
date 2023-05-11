@@ -7,6 +7,7 @@ import com.example.coursach.service.LessonService;
 import com.example.coursach.service.file.FileLoaderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +28,15 @@ public class UploadFileController {
       return   lessonService.createLesson(lessonDto);
     }
 
-    @GetMapping("/presigned-aws-url")
+    @GetMapping("/presigned-aws-url/{courseId}/{lessonId}/{ext}")
     @ResponseBody
-    public String getPresignedUrl(@RequestBody FileUploadMetaRequestDto requestDto) {
-       return uploadService.createUploadUrl(requestDto);
+    public String getPresignedUrl(@PathVariable Long courseId,
+                                  @PathVariable Long lessonId,
+                                  @PathVariable String ext) {
+       return uploadService.createUploadUrl(FileUploadMetaRequestDto.builder()
+                       .courseId(courseId)
+                       .extension(ext)
+                       .lessonId(lessonId)
+               .build());
     }
 }

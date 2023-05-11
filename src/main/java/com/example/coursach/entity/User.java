@@ -65,16 +65,13 @@ public class User {
     @OneToOne(mappedBy = "requested", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     private Code code;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "roleid")
     )
     private Set<Role> roles = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
-    private List<CourseUser> joinCourses;
 
     @ManyToMany(mappedBy = "users")
     private Set<Notification> notifications;
