@@ -1,18 +1,9 @@
 package com.example.coursach.service;
 
 import com.example.coursach.converters.CourseConverter;
-import com.example.coursach.dto.CourseDto;
-import com.example.coursach.dto.CourseDtoForMentors;
-import com.example.coursach.dto.CourseDtoWithMentors;
-import com.example.coursach.dto.CourseShortInfoDto;
-import com.example.coursach.dto.PaginationCoursesDto;
-import com.example.coursach.dto.PaginationCoursesWithMentorsDto;
+import com.example.coursach.dto.*;
 import com.example.coursach.dto.user.BaseUserInformationDto;
-import com.example.coursach.entity.Course;
-import com.example.coursach.entity.CourseUser;
-import com.example.coursach.entity.Role;
-import com.example.coursach.entity.User;
-import com.example.coursach.entity.UserCourseId;
+import com.example.coursach.entity.*;
 import com.example.coursach.entity.enums.FilterBy;
 import com.example.coursach.entity.enums.TimeStatus;
 import com.example.coursach.entity.enums.UserRole;
@@ -27,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,6 +63,9 @@ public class CourseService {
     }
 
     public CourseDtoWithMentors getById(Long id, String userUuid) {
+
+        User userById = userRepository.findUserById(userUuid).orElseThrow(RuntimeException::new);
+
         List<CourseUser> allByUserCourseIdCourseId = courseUserRepository.findById_CourseId(id);
 
         List<User> users = userRepository.
@@ -79,10 +74,27 @@ public class CourseService {
 
         List<BaseUserInformationDto> baseUserInformationDtos = userConverter.listUserToListBaseUserInformationDto(users);
 
-        CourseDtoWithMentors courseDtoWithMentors = courseConverter.toDtoWithLessonAndMentors(courseRepository.findById(id).get(), baseUserInformationDtos);
-        Optional<CourseUser> byId = courseUserRepository.findById(UserCourseId.builder().courseId(id).userId(userUuid).build());
+        Course course = courseRepository.findById(id).get();
 
-        byId.ifPresent(x -> courseDtoWithMentors.setStudentId(x.getId().getUserId()));
+        Optional<CourseUser> byId
+                = courseUserRepository.findById(UserCourseId.builder().courseId(id).userId(userUuid).build());
+
+        UserRole name = byId.map(x->x.getRole().getName()).orElse(UserRole.USER);
+
+        boolean access = name.equals(UserRole.STUDENT)
+                || name.equals(UserRole.LECTURER)
+                || userById.getRoles().stream().anyMatch(x -> x.getName().equals(UserRole.ADMIN));
+
+        CourseDtoWithMentors courseDtoWithMentors
+                = courseConverter.toDtoWithLessonAndMentors(course,
+                access ? course.getLessons(): new ArrayList<>(),
+                baseUserInformationDtos);
+
+        if(name.equals(UserRole.STUDENT))
+            courseDtoWithMentors.setStudentId(userUuid);
+        else if(name.equals(UserRole.LECTURER))
+            courseDtoWithMentors.setMentorId(userUuid);
+
         return courseDtoWithMentors;
     }
 

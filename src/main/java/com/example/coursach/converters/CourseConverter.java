@@ -87,7 +87,7 @@ public class CourseConverter {
                 .build();
     }
 
-    public CourseDtoWithMentors toDtoWithLessonAndMentors(Course course, List<BaseUserInformationDto> baseUserInformationDtos) {
+    public CourseDtoWithMentors toDtoWithLessonAndMentors(Course course,List<Lesson> lessons, List<BaseUserInformationDto> baseUserInformationDtos) {
         return CourseDtoWithMentors.builder()
                 .id(course.getId())
                 .size(course.getSize())
@@ -96,7 +96,7 @@ public class CourseConverter {
                 .status(course.getStatus())
                 .dateEnd(course.getEnd().atZone(ZoneId.systemDefault()))
                 .dateStart(course.getStart().atZone(ZoneId.systemDefault()))
-                .lessons(course.getLessons().stream()
+                .lessons(lessons.stream()
                         .sorted(Comparator.comparing(Lesson::getStart, Comparator.nullsLast(Comparator.naturalOrder())))
                         .map(lessonConverter::toDtoSortInfo)
                         .collect(Collectors.toList()))

@@ -39,5 +39,6 @@ public class CourseDtoWithMentors {
 
     private List<LessonShortInfoDto> lessons;
     private String studentId;
+    private String mentorId;
 
 }
