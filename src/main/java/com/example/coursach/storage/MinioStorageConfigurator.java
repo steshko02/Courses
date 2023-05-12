@@ -38,10 +38,6 @@ public class MinioStorageConfigurator {
             amazonS3Client.createBucket(minioProperties.getUserAvatarsBucket());
             amazonS3Client.setBucketPolicy(minioProperties.getUserAvatarsBucket(),
                     getPublicReadPolicy(minioProperties.getUserAvatarsBucket()));
-            /*Uncomment when UX/UI will provide default user avatar.
-            amazonS3Client.putObject(new PutObjectRequest(minioProperties.getUserAvatarsBucket(),
-                    minioProperties.getDefaultUserAvatar(), getDefaultAvatarFileObject(String.format("%s%s",
-                    minioProperties.getServerStorageDirectory(), minioProperties.getDefaultUserAvatar()))));*/
         }
 
         if (!amazonS3Client.doesBucketExistV2(minioProperties.getItemsPicturesStorageBucket())) {

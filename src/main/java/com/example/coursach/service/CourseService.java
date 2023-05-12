@@ -150,7 +150,6 @@ public class CourseService {
 
         List<Long> courses = byId_userId.stream().map(cu -> cu.getId().getCourseId()).collect(Collectors.toList());
 
-
         Page<Course> byAllById = courseRepository.findByIdIn(courses, PageRequest.of(number, size));
         Map<Long, List<User>> collect = byAllById.getContent().stream().collect(
                 Collectors.toMap(Course::getId, c -> Optional.ofNullable(

@@ -27,7 +27,7 @@ app:
     app-url: http://192.168.1.96:8080
   jwt:
     secret-word: megaSecretWordInTheWorld
-    hours: 1
+    hours: 5
     prefix: "Bearer "
     access-token-key: Authorization
 
@@ -79,8 +79,8 @@ app:
       items-pictures-storage-bucket: "senla-courses-pictures"
       user-avatars-bucket: "users-avatars"
       redirection-end-point: ${MINIO_REP:http://localhost:9000}
-      server-storage-directory: ${SERVER_STORAGE_DIRECTORY:/photos}
-      avatars-directory-path: ${AVATARS_DIRECTORY_PATH:/photos/}
+      server-storage-directory: ${SERVER_STORAGE_DIRECTORY:./photos}
+      avatars-directory-path: ${AVATARS_DIRECTORY_PATH:./photos/}
       invoices-directory-path: ${INVOICES_DIRECTORY_PATH:../photos/}
       default-user-avatar: "default"
       allowed-photo-formats:

@@ -11,10 +11,10 @@ import java.util.List;
 @Setter
 @Builder
 @Jacksonized
-public class PaginationBookingDto {
+public class PaginationAnswerDto {
 
     private Long totalCount;
     private Integer totalPages;
     private Integer currentPage;
-    private List<BookingDto> bookings;
+    private List<AnswerWithUserDto> answers;
 }

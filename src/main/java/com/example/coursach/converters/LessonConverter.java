@@ -51,6 +51,7 @@ public class LessonConverter {
         return LessonInfoForMentorsDto.builder()
                 .id(lesson.getId())
                 .title(lesson.getTitle())
+                .status(lesson.getStatus())
                 .dateEnd(lesson.getEnd().atZone(ZoneId.systemDefault()))
                 .dateStart(lesson.getStart().atZone(ZoneId.systemDefault()))
                 .mentors(lesson.getMentors().stream().map(userConverter::userToBaseUserInformationDto).collect(Collectors.toList()))

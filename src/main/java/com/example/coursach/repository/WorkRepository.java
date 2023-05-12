@@ -15,5 +15,7 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
             "when ?1 > l.deadline then 2" +
             " else 0 end ")
     void updateWorkByTime(LocalDateTime time);
+
+    void findByLesson_Id(Long id);
 }
 
