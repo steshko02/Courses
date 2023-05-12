@@ -3,6 +3,7 @@ package com.example.coursach.controllers;
 import com.example.coursach.dto.CourseDto;
 import com.example.coursach.dto.CourseDtoWithMentors;
 import com.example.coursach.dto.PaginationCoursesDto;
+import com.example.coursach.dto.PaginationCoursesWithMentorsDto;
 import com.example.coursach.dto.picture.StatusDto;
 import com.example.coursach.entity.enums.FilterBy;
 import com.example.coursach.security.model.AuthorizedUser;
@@ -47,12 +48,17 @@ public class CoursesController {
         return courseService.getById(id,authorizedUser.getUuid());
     }
 
+    @GetMapping("/bymentors")
+    @ResponseBody
+    public PaginationCoursesWithMentorsDto getByMentors(@RequestParam("number") Integer number, @RequestParam("size") Integer size, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return courseService.getAllByMentor(number,size, authorizedUser.getUuid());
+    }
+
     @GetMapping("/all")
     @ResponseBody
     public PaginationCoursesDto getAll(@RequestParam("number") Integer number, @RequestParam("size") Integer size) {
         return courseService.getAllWithPagination(number,size);
     }
-
 
     @GetMapping("filter/{filter}")
     @ResponseBody

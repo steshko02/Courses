@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
@@ -24,4 +25,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     void updateCourseByTime(LocalDateTime time);
 
     Page<Course> findByStatus(PageRequest of, TimeStatus status);
+
+    Page<Course> findByIdIn(List<Long> ids, PageRequest of);
 }

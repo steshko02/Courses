@@ -105,7 +105,7 @@ public class MinioStorageService {
         Optional.of(byId).ifPresent(x-> {
                     x.getResources().add(Resource.builder()
                             .extension(extension)
-                            .filename(filenameDoc)
+                            .filename(picture.getOriginalFilename())
                             .url(getObjectUrl("answer", filePath, ""))
                             .type(ResourceType.DOCUMENT)
                             .build());
@@ -144,7 +144,7 @@ public class MinioStorageService {
         byId.ifPresent(x-> {
                     x.getResources().add(Resource.builder()
                             .extension(extension)
-                            .filename(pictureName)
+                            .filename(picture.getOriginalFilename())
                             .url(getObjectUrl("lesson", filePath, ""))
                             .type(ResourceType.DOCUMENT)
                             .build());

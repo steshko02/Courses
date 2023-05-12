@@ -2,8 +2,11 @@ package com.example.coursach.service;
 
 import com.example.coursach.converters.CourseConverter;
 import com.example.coursach.dto.CourseDto;
+import com.example.coursach.dto.CourseDtoForMentors;
 import com.example.coursach.dto.CourseDtoWithMentors;
+import com.example.coursach.dto.CourseShortInfoDto;
 import com.example.coursach.dto.PaginationCoursesDto;
+import com.example.coursach.dto.PaginationCoursesWithMentorsDto;
 import com.example.coursach.dto.user.BaseUserInformationDto;
 import com.example.coursach.entity.Course;
 import com.example.coursach.entity.CourseUser;
@@ -18,12 +21,14 @@ import com.example.coursach.repository.CourseUserRepository;
 import com.example.coursach.repository.UserRepository;
 import com.example.coursach.service.converter.UserConverter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,7 +48,7 @@ public class CourseService {
 
         List<String> ids = courseDto.getIds();
         if (ids != null && !ids.isEmpty()) {
-            ids.forEach(u-> {
+            ids.forEach(u -> {
 
                 UserCourseId courseId = UserCourseId.builder()
                         .userId(u)
@@ -54,7 +59,7 @@ public class CourseService {
                         .id(courseId)
                         .role(Role.builder().name(UserRole.LECTURER).build())
                         .build();
-               courseUserRepository.save(courseUser);
+                courseUserRepository.save(courseUser);
             });
         }
         return save.getId();
@@ -70,14 +75,14 @@ public class CourseService {
 
         List<User> users = userRepository.
                 findAllByIds(allByUserCourseIdCourseId.stream()
-                        .map(x->x.getId().getUserId()).collect(Collectors.toList()));
+                        .map(x -> x.getId().getUserId()).collect(Collectors.toList()));
 
         List<BaseUserInformationDto> baseUserInformationDtos = userConverter.listUserToListBaseUserInformationDto(users);
 
         CourseDtoWithMentors courseDtoWithMentors = courseConverter.toDtoWithLessonAndMentors(courseRepository.findById(id).get(), baseUserInformationDtos);
         Optional<CourseUser> byId = courseUserRepository.findById(UserCourseId.builder().courseId(id).userId(userUuid).build());
 
-        byId.ifPresent(x-> courseDtoWithMentors.setStudentId(x.getId().getUserId()));
+        byId.ifPresent(x -> courseDtoWithMentors.setStudentId(x.getId().getUserId()));
         return courseDtoWithMentors;
     }
 
@@ -103,7 +108,7 @@ public class CourseService {
                 .build();
     }
 
-    public void checkAndSwitchStatus(){
+    public void checkAndSwitchStatus() {
         LocalDateTime now = LocalDateTime.now();
         courseRepository.updateCourseByTime(now);
     }
@@ -112,7 +117,7 @@ public class CourseService {
 
         Page<Course> coursePage = null;
 
-        switch (filter){
+        switch (filter) {
             case ALL -> coursePage = courseRepository.findAll(PageRequest.of(number, size));
             case DURING -> coursePage = courseRepository.findByStatus(PageRequest.of(number, size), TimeStatus.DURING);
             case NOT_STARTED -> coursePage = courseRepository.findByStatus(PageRequest.of(number, size), TimeStatus.NOT_STARTED);
@@ -128,5 +133,40 @@ public class CourseService {
                 .totalPages(coursePage.getTotalPages())
                 .build();
 
+    }
+
+    public PaginationCoursesWithMentorsDto getAllByMentor(Integer number, Integer size, String uuid) {
+
+        User user = userRepository.findById(uuid).orElseThrow(RuntimeException::new);
+
+        List<CourseUser> byId_userId = Optional.ofNullable(
+                        courseUserRepository.findById_UserIdAndAndRole_Name(uuid, UserRole.LECTURER))
+                .orElse(Lists.newArrayList());
+
+        //переделать
+        if (byId_userId.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        List<Long> courses = byId_userId.stream().map(cu -> cu.getId().getCourseId()).collect(Collectors.toList());
+
+
+        Page<Course> byAllById = courseRepository.findByIdIn(courses, PageRequest.of(number, size));
+        Map<Long, List<User>> collect = byAllById.getContent().stream().collect(
+                Collectors.toMap(Course::getId, c -> Optional.ofNullable(
+                                courseUserRepository.findById_CourseId(c.getId()))
+                        .map(us -> userRepository.findAllByIds(us.stream().map(u -> u.getId().getUserId()).collect(Collectors.toList())))
+                        .orElse(Lists.newArrayList())));
+
+
+        List<CourseDtoForMentors> courseDtoForMentors = courseConverter
+                .toDtosForMentors(byAllById.get().collect(Collectors.toList()),collect);
+
+        return PaginationCoursesWithMentorsDto.builder()
+                .courses(courseDtoForMentors)
+                .totalCount(byAllById.getTotalElements())
+                .currentPage(number + 1)
+                .totalPages(byAllById.getTotalPages())
+                .build();
     }
 }

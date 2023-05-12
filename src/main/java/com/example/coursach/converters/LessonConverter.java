@@ -2,23 +2,28 @@ package com.example.coursach.converters;
 
 import com.example.coursach.dto.LessonDto;
 import com.example.coursach.dto.LessonDtoWithMentors;
+import com.example.coursach.dto.LessonInfoForMentorsDto;
 import com.example.coursach.dto.LessonShortInfoDto;
 import com.example.coursach.dto.WorkDto;
 import com.example.coursach.dto.user.BaseUserInformationDto;
 import com.example.coursach.entity.Course;
 import com.example.coursach.entity.Lesson;
 import com.example.coursach.entity.User;
+import com.example.coursach.service.converter.UserConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
 public class LessonConverter {
     private final TimeCheckHelper timeCheckHelper;
+
+    private final UserConverter userConverter;
 
     public Lesson toEntity(LessonDto lessonDto, Course course, List<User> mentors) {
 
@@ -41,6 +46,18 @@ public class LessonConverter {
                 .title(lesson.getTitle())
                 .build();
     }
+
+    public LessonInfoForMentorsDto toDtoWithMentors(Lesson lesson) {
+        return LessonInfoForMentorsDto.builder()
+                .id(lesson.getId())
+                .title(lesson.getTitle())
+                .dateEnd(lesson.getEnd().atZone(ZoneId.systemDefault()))
+                .dateStart(lesson.getStart().atZone(ZoneId.systemDefault()))
+                .mentors(lesson.getMentors().stream().map(userConverter::userToBaseUserInformationDto).collect(Collectors.toList()))
+                .build();
+    }
+
+
 
     public LessonDtoWithMentors toDto(Lesson lesson, List<BaseUserInformationDto> mentors, Optional<WorkDto> workDto) {
         return LessonDtoWithMentors.builder()
