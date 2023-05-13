@@ -101,4 +101,21 @@ public class AnswerService {
                 .answers(collect)
                 .build();
     }
+
+    public Long update(AnswerDto answerDto, String uuid) {
+        User user = userRepository.findById(uuid).orElseThrow(RuntimeException::new);
+        Work work = workRepository.findById(answerDto.getWorkId()).orElseThrow(RuntimeException::new);
+
+        //чекать на то что юзер - ученик на курсе
+        Answer answer = Answer.builder()
+                .id(answerDto.getId())
+                .comment(answerDto.getComment())
+                .user(user)
+                .work(work)
+                .status(checkTime(work.getDeadline()))
+                .dateCreation(LocalDateTime.now())
+                .build();
+
+        return answerRepository.save(answer).getId();
+    }
 }

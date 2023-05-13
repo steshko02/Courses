@@ -46,7 +46,7 @@ public class Booking {
     private LocalDateTime dateCreation;
 
     @JoinColumn(name = "courseid")
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Course course;
 
     @JoinColumn(name = "status")

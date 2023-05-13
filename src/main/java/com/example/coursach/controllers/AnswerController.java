@@ -28,6 +28,12 @@ public class AnswerController {
         return answerService.createAnswer(answerDto, authorizedUser.getUuid());
     }
 
+    @PutMapping
+    @ResponseBody
+    public Long update(@RequestBody AnswerDto answerDto, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return answerService.update(answerDto, authorizedUser.getUuid());
+    }
+
 //    @DeleteMapping("/{id}")
 //    public void delete(@PathVariable("id") Long id) {
 //        workService.deleteWork(id);

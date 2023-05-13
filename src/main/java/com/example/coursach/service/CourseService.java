@@ -147,17 +147,22 @@ public class CourseService {
 
     }
 
-    public PaginationCoursesWithMentorsDto getAllByMentor(Integer number, Integer size, String uuid) {
+    public PaginationCoursesWithMentorsDto getAllByRole(Integer number, Integer size, String uuid, UserRole role) {
 
         User user = userRepository.findById(uuid).orElseThrow(RuntimeException::new);
 
         List<CourseUser> byId_userId = Optional.ofNullable(
-                        courseUserRepository.findById_UserIdAndAndRole_Name(uuid, UserRole.LECTURER))
+                        courseUserRepository.findById_UserIdAndAndRole_Name(uuid, role))
                 .orElse(Lists.newArrayList());
 
         //переделать
         if (byId_userId.isEmpty()) {
-            throw new RuntimeException();
+            return PaginationCoursesWithMentorsDto.builder()
+                    .courses(new ArrayList<>())
+                    .totalCount(0L)
+                    .currentPage(number + 1)
+                    .totalPages(0)
+                    .build();
         }
 
         List<Long> courses = byId_userId.stream().map(cu -> cu.getId().getCourseId()).collect(Collectors.toList());
@@ -165,7 +170,7 @@ public class CourseService {
         Page<Course> byAllById = courseRepository.findByIdIn(courses, PageRequest.of(number, size));
         Map<Long, List<User>> collect = byAllById.getContent().stream().collect(
                 Collectors.toMap(Course::getId, c -> Optional.ofNullable(
-                                courseUserRepository.findById_CourseId(c.getId()))
+                                courseUserRepository.findById_CourseIdAndAndRole_Name(c.getId(), UserRole.LECTURER))
                         .map(us -> userRepository.findAllByIds(us.stream().map(u -> u.getId().getUserId()).collect(Collectors.toList())))
                         .orElse(Lists.newArrayList())));
 
@@ -179,5 +184,14 @@ public class CourseService {
                 .currentPage(number + 1)
                 .totalPages(byAllById.getTotalPages())
                 .build();
+    }
+
+    public PaginationCoursesWithMentorsDto getAllByStudent(Integer number, Integer size, String uuid) {
+        User user = userRepository.findById(uuid).orElseThrow(RuntimeException::new);
+        List<CourseUser> byId_userId = Optional.ofNullable(
+                        courseUserRepository.findById_UserIdAndAndRole_Name(uuid, UserRole.LECTURER))
+                .orElse(Lists.newArrayList());
+
+        return null;
     }
 }

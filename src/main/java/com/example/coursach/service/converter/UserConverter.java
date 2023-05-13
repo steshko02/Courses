@@ -9,8 +9,8 @@ import com.example.coursach.dto.user.UserPagedDto;
 import com.example.coursach.entity.Profile;
 import com.example.coursach.entity.Role;
 import com.example.coursach.entity.User;
-import com.example.coursach.entity.enums.AccountStatus;
 import com.example.coursach.entity.enums.UserRole;
+import com.example.coursach.repository.RoleRepository;
 import com.example.coursach.service.converter.resolvers.UserPictureUrlResolver;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,9 +27,11 @@ import java.util.stream.Collectors;
 public class UserConverter {
 
     private final UserProperties userProperties;
+    private final RoleRepository roleRepository;
 
-    public UserConverter(UserProperties userProperties) {
+    public UserConverter(UserProperties userProperties, RoleRepository roleRepository) {
         this.userProperties = userProperties;
+        this.roleRepository = roleRepository;
     }
 
     public User updatePassword(RegisterConfirmDto requestDto, User user, PasswordEncoder passwordEncoder) {
@@ -40,7 +42,7 @@ public class UserConverter {
     public User toEntity(RegisterRequestDto requestDto, PasswordEncoder passwordEncoder, UserRole userRole) {
         String password = requestDto.getPassword();
         return User.builder()
-                .roles(Set.of(Role.builder().name(userRole).build()))
+                .roles(Set.of(roleRepository.findByName(userRole)))
                 .accountStatus(null)
                 .firstname(requestDto.getFirstname())
                 .lastname(requestDto.getLastname())

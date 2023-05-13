@@ -34,4 +34,5 @@ public class LessonDtoWithMentors {
     private final WorkDto work;
     private AnswerDto answer;
     private String studentId;
+    private CheckWorkDto checkWork;
 }

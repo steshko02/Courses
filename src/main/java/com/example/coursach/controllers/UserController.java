@@ -23,12 +23,7 @@ public class UserController {
     public static final String USERS_PATH = "/users";
 
     private final UserService userService;
-
-//    @GetMapping("{userUuid}")
-//    public BaseUserInformationDto getBaseUserInformation(@PathVariable String userUuid) {
-//        return userService.(userUuid);
-//    }
-
+    
     @GetMapping("/pagination")
     public UserPagedDto getAllWithPagination(@Valid PageableRequestDto pageableRequestDto,
                                @RequestParam(defaultValue = StringUtils.EMPTY) String query) {

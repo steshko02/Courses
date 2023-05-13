@@ -1,6 +1,9 @@
 package com.example.coursach.security.utils;
 
 import com.example.coursach.config.properties.JwtProperties;
+import com.example.coursach.entity.enums.UserRole;
+import com.example.coursach.repository.CourseUserRepository;
+import com.example.coursach.repository.UserRepository;
 import com.example.coursach.security.model.AuthorizedUser;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -11,17 +14,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,11 +30,12 @@ import java.util.Optional;
 public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
-
+    private final CourseUserRepository courseUserRepository;
     private final JwtProperties jwtProperties;
 
-    public JwtTokenProvider(UserDetailsService userDetailsService, JwtProperties jwtProperties) {
+    public JwtTokenProvider(UserDetailsService userDetailsService, CourseUserRepository courseUserRepository, JwtProperties jwtProperties) {
         this.userDetailsService = userDetailsService;
+        this.courseUserRepository = courseUserRepository;
         this.jwtProperties = jwtProperties;
     }
 
@@ -47,9 +47,17 @@ public class JwtTokenProvider {
                         .toInstant());
 
         List<String> list = new ArrayList<>();
-        userDetails.getAuthorities().forEach(u->list.add(u.getAuthority()));
+        userDetails.getAuthorities().forEach(u -> list.add(u.getAuthority()));
+
+        if (courseUserRepository.existsById_UserIdAndAndRole_Name(userDetails.getUuid(), UserRole.LECTURER)) {
+            list.add("ROLE_"+ UserRole.LECTURER);
+        }
+        if (courseUserRepository.existsById_UserIdAndAndRole_Name(userDetails.getUuid(), UserRole.STUDENT)) {
+            list.add("ROLE_"+ UserRole.STUDENT);
+        }
+
         Map<String, Object> roles = new HashMap<>();
-        roles.put("roles",list);
+        roles.put("roles", list);
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .addClaims(roles)

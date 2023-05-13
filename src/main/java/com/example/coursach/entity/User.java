@@ -65,7 +65,7 @@ public class User {
     @OneToOne(mappedBy = "requested", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     private Code code;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "userid"),

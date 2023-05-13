@@ -1,26 +1,16 @@
 package com.example.coursach.service;
 
 import com.example.coursach.converters.AnswerConverter;
+import com.example.coursach.converters.CheckWorkConvertor;
 import com.example.coursach.converters.LessonConverter;
 import com.example.coursach.converters.WorkConverter;
 import com.example.coursach.dto.LessonDto;
 import com.example.coursach.dto.LessonDtoWithMentors;
 import com.example.coursach.dto.WorkDto;
 import com.example.coursach.dto.user.BaseUserInformationDto;
-import com.example.coursach.entity.Answer;
-import com.example.coursach.entity.Course;
-import com.example.coursach.entity.CourseUser;
-import com.example.coursach.entity.Lesson;
-import com.example.coursach.entity.User;
-import com.example.coursach.entity.UserCourseId;
-import com.example.coursach.entity.Work;
+import com.example.coursach.entity.*;
 import com.example.coursach.entity.enums.UserRole;
-import com.example.coursach.repository.AnswerRepository;
-import com.example.coursach.repository.CourseRepository;
-import com.example.coursach.repository.CourseUserRepository;
-import com.example.coursach.repository.LessonRepository;
-import com.example.coursach.repository.ResourceRepository;
-import com.example.coursach.repository.UserRepository;
+import com.example.coursach.repository.*;
 import com.example.coursach.service.converter.UserConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,7 +32,8 @@ public class LessonService {
     private final CourseUserRepository courseUserRepository;
     private final AnswerRepository answerRepository;
     private final AnswerConverter answerConverter;
-
+    private final CheckWorkRepository checkWorkRepository;
+    private final CheckWorkConvertor checkWorkConvertor;
     public Long createLesson(LessonDto lessonDto) {
         Course course = courseRepository.findById(lessonDto.getCourseId())
                 .orElseThrow(RuntimeException::new);
@@ -80,12 +71,18 @@ public class LessonService {
             }
         });
 //убрать
+
         lessonDtoWithMentors.setAnswer(
                 Optional.ofNullable(work).map(w ->
                         {
                             Answer byWork_idAndUser_id = answerRepository.findByWork_IdAndUser_Id(w.getId(), userUuid);
                             if (byWork_idAndUser_id == null)
                                 return null;
+
+                            Optional<CheckWork> byAnswerId = checkWorkRepository.findByAnswer_Id(byWork_idAndUser_id.getId());
+                            lessonDtoWithMentors.setCheckWork(
+                                    byAnswerId.map(checkWorkConvertor::toDto).orElse(null)
+                            );
                             return answerConverter.toDto(byWork_idAndUser_id);
                         }
                 ).orElse(null));

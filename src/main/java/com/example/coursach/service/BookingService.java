@@ -3,20 +3,16 @@ package com.example.coursach.service;
 import com.example.coursach.converters.BookingConverter;
 import com.example.coursach.converters.CourseConverter;
 import com.example.coursach.dto.BookingDto;
-import com.example.coursach.dto.CourseDto;
 import com.example.coursach.dto.CourseShortInfoDto;
 import com.example.coursach.dto.PaginationBookingDto;
-import com.example.coursach.dto.PaginationCoursesDto;
 import com.example.coursach.dto.user.BaseUserInformationDto;
 import com.example.coursach.entity.Booking;
 import com.example.coursach.entity.Course;
 import com.example.coursach.entity.CourseUser;
-import com.example.coursach.entity.Lesson;
 import com.example.coursach.entity.Role;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.UserCourseId;
 import com.example.coursach.entity.enums.BookingStatus;
-import com.example.coursach.entity.enums.TimeStatus;
 import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.repository.BookingRepository;
 import com.example.coursach.repository.CourseRepository;
@@ -48,20 +44,26 @@ public class BookingService {
 
     public Long createBookings(Long courseId, String userId) {
 
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(RuntimeException::new);
+        return bookingRepository.findByUser_IdAndCourseId(userId, courseId).map(
+                Booking::getId
+        ).orElseGet(() -> {
+                    Course course = courseRepository.findById(courseId)
+                            .orElseThrow(RuntimeException::new);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(RuntimeException::new);
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(RuntimeException::new);
 
-        Booking booking = Booking.builder()
-                .dateCreation(LocalDateTime.now())
-                .status(BookingStatus.CONSIDERED)
-                .user(user)
-                .course(course)
-                .build();
-       return bookingRepository.save(booking).getId();
+                    Booking booking = Booking.builder()
+                            .dateCreation(LocalDateTime.now())
+                            .status(BookingStatus.CONSIDERED)
+                            .user(user)
+                            .course(course)
+                            .build();
+                    return bookingRepository.save(booking).getId();
+                }
+        );
     }
+
 
     public void deleteBookings(Long id) {
 //        Booking booking = bookingRepository.findById(id).get();
@@ -72,47 +74,47 @@ public class BookingService {
     }
 
     public void approve(Long id) {
-       Booking booking = bookingRepository.findById(id).orElseThrow(RuntimeException::new);
-       if(booking.getStatus() == BookingStatus.APPROWED){
-           throw new RuntimeException("User already exists");
-       }
-       User user = booking.getUser();
-       Course course = booking.getCourse();
+        Booking booking = bookingRepository.findById(id).orElseThrow(RuntimeException::new);
+        if (booking.getStatus() == BookingStatus.APPROWED) {
+            throw new RuntimeException("User already exists");
+        }
+        User user = booking.getUser();
+        Course course = booking.getCourse();
 
-       CourseUser courseUser = CourseUser.builder()
-               .id(UserCourseId.builder().courseId(course.getId()).userId(user.getId()).build())
-               .role(Role.builder().name(UserRole.STUDENT).build())
-               .build();
+        CourseUser courseUser = CourseUser.builder()
+                .id(UserCourseId.builder().courseId(course.getId()).userId(user.getId()).build())
+                .role(Role.builder().name(UserRole.STUDENT).build())
+                .build();
 
-       courseUserRepository.save(courseUser);
-       booking.setStatus(BookingStatus.APPROWED);
-       bookingRepository.save(booking);
+        courseUserRepository.save(courseUser);
+        booking.setStatus(BookingStatus.APPROWED);
+        bookingRepository.save(booking);
         Integer count = course.getCount();
-        course.setCount(count==null? 1 : count+1);
+        course.setCount(count == null ? 1 : count + 1);
         courseRepository.save(course);
     }
 
     public PaginationBookingDto getAllWithPagination(Integer number, Integer size) {
         Page<Booking> coursePage = bookingRepository.findAll(PageRequest.of(number, size));
         List<BookingDto> collect = coursePage.get().map(book -> {
-            BaseUserInformationDto baseUserInformationDto = userConverter.userToBaseUserInformationDto(book.getUser());
-            Course course = book.getCourse();
-            CourseShortInfoDto build = CourseShortInfoDto.builder()
-                    .id(course.getId())
-                    .title(course.getTitle())
-                    .size(course.getSize())
-                    .status(course.getStatus())
-                    .count(course.getCount() == null? 0: course.getCount())
-                    .build();
+                    BaseUserInformationDto baseUserInformationDto = userConverter.userToBaseUserInformationDto(book.getUser());
+                    Course course = book.getCourse();
+                    CourseShortInfoDto build = CourseShortInfoDto.builder()
+                            .id(course.getId())
+                            .title(course.getTitle())
+                            .size(course.getSize())
+                            .status(course.getStatus())
+                            .count(course.getCount() == null ? 0 : course.getCount())
+                            .build();
 
-            return BookingDto.builder()
-                    .id(book.getId())
-                    .user(baseUserInformationDto)
-                    .dateCreation(book.getDateCreation().atZone(ZoneId.systemDefault()))
-                    .status(book.getStatus())
-                    .course(build)
-                    .build();
-        }).sorted(Comparator.comparing(BookingDto::getId, Comparator.nullsLast(Comparator.naturalOrder())))
+                    return BookingDto.builder()
+                            .id(book.getId())
+                            .user(baseUserInformationDto)
+                            .dateCreation(book.getDateCreation().atZone(ZoneId.systemDefault()))
+                            .status(book.getStatus())
+                            .course(build)
+                            .build();
+                }).sorted(Comparator.comparing(BookingDto::getId, Comparator.nullsLast(Comparator.naturalOrder())))
                 .collect(Collectors.toList());
 
         return PaginationBookingDto.builder()
@@ -126,13 +128,13 @@ public class BookingService {
     public void canceled(Long id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
-        if(booking.getStatus()==BookingStatus.APPROWED){
+        if (booking.getStatus() == BookingStatus.APPROWED) {
             Optional<CourseUser> byId = courseUserRepository.findById(UserCourseId.builder()
                     .courseId(booking.getCourse().getId())
                     .userId(booking.getUser().getId()).build());
             courseUserRepository.delete(byId.get());
             Course course = booking.getCourse();
-            course.setCount(course.getCount()-1);
+            course.setCount(course.getCount() - 1);
             courseRepository.save(course);
         }
         booking.setStatus(BookingStatus.CANCELLED);
