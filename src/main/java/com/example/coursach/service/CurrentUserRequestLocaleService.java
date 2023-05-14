@@ -14,7 +14,7 @@ public class CurrentUserRequestLocaleService {
         return Optional.of(LocaleContextHolder.getLocale())
                 .map(Locale::getLanguage)
                 .map(MessageLocale::lookup)
-                .orElse(MessageLocale.EN);
+                .orElse(MessageLocale.RU);
     }
 
 }

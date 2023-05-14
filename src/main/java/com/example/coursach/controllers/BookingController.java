@@ -1,6 +1,7 @@
 package com.example.coursach.controllers;
 
 import com.example.coursach.dto.PaginationBookingDto;
+import com.example.coursach.entity.enums.BookingStatus;
 import com.example.coursach.security.model.AuthorizedUser;
 import com.example.coursach.service.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +51,16 @@ public class BookingController {
     @GetMapping("/all")
     @ResponseBody
     public PaginationBookingDto getAll(@RequestParam("number") Integer number,
-                                       @RequestParam("size") Integer size) {
-        return bookingService.getAllWithPagination(number,size);
+                                       @RequestParam("size") Integer size,
+                                       @RequestParam ("status")String status,
+                                       @RequestParam ("user") String user,
+                                        @RequestParam ("course") String course)
+    {
+        return bookingService.getAllWithPagination(number,
+                size,
+                BookingStatus.valueOf(status),
+                user,
+                course);
     }
 
 }

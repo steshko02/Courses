@@ -54,7 +54,7 @@ public class LessonService {
         WorkDto workDto = Optional.ofNullable(work).map(workConverter::toDto).orElse(null);
         LessonDtoWithMentors lessonDtoWithMentors = lessonConverter.toDto(lesson, baseUserInformationDtos, Optional.ofNullable(workDto));
 
-        Optional<CourseUser> byId = courseUserRepository.findById(UserCourseId.builder().courseId(id).userId(userUuid).build());
+        Optional<CourseUser> byId = courseUserRepository.findById(UserCourseId.builder().courseId(lesson.getCourse().getId()).userId(userUuid).build());
 
         byId.ifPresent(x -> {
             if (byId.get().getRole().getName().equals(UserRole.STUDENT)) {
@@ -65,27 +65,19 @@ public class LessonService {
                                     Answer byWork_idAndUser_id = answerRepository.findByWork_IdAndUser_Id(w.getId(), userUuid);
                                     if (byWork_idAndUser_id == null)
                                         return null;
+                                    Optional<CheckWork> byAnswerId = checkWorkRepository.findByAnswer_Id(byWork_idAndUser_id.getId());
+                                    lessonDtoWithMentors.setCheckWork(
+                                            byAnswerId.map(checkWorkConvertor::toDto).orElse(null)
+                                    );
                                     return answerConverter.toDto(byWork_idAndUser_id);
                                 }
                         ).orElse(null));
             }
+            if (x.getRole().getName().equals(UserRole.STUDENT))
+                 lessonDtoWithMentors.setStudentId(userUuid);
+            else if (x.getRole().getName().equals(UserRole.LECTURER))
+                lessonDtoWithMentors.setMentorId(userUuid);
         });
-//убрать
-
-        lessonDtoWithMentors.setAnswer(
-                Optional.ofNullable(work).map(w ->
-                        {
-                            Answer byWork_idAndUser_id = answerRepository.findByWork_IdAndUser_Id(w.getId(), userUuid);
-                            if (byWork_idAndUser_id == null)
-                                return null;
-
-                            Optional<CheckWork> byAnswerId = checkWorkRepository.findByAnswer_Id(byWork_idAndUser_id.getId());
-                            lessonDtoWithMentors.setCheckWork(
-                                    byAnswerId.map(checkWorkConvertor::toDto).orElse(null)
-                            );
-                            return answerConverter.toDto(byWork_idAndUser_id);
-                        }
-                ).orElse(null));
         return lessonDtoWithMentors;
     }
 

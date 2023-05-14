@@ -34,17 +34,6 @@ public class AnswerController {
         return answerService.update(answerDto, authorizedUser.getUuid());
     }
 
-//    @DeleteMapping("/{id}")
-//    public void delete(@PathVariable("id") Long id) {
-//        workService.deleteWork(id);
-//    }
-//
-//    @PutMapping
-//    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-//    public void updateWork(@RequestBody WorkDto workDto) {
-//        workService.update(workDto);
-//    }
-
     @PostMapping("/upload/{answerId}")
     public StatusDto uploadFile(@RequestParam("file") MultipartFile picture,
                                 @PathVariable Long answerId,
@@ -56,7 +45,9 @@ public class AnswerController {
     @ResponseBody
     public PaginationAnswerDto getAll(@RequestParam("number") Integer number,
                                       @RequestParam("size") Integer size,
-                                      @PathVariable("id") Long id) {
-        return answerService.getByLesson(number,size,id);
+                                      @PathVariable("id") Long id,
+                                      @RequestParam("user") String user,
+                                      @RequestParam("status") String status) {
+        return answerService.getByLesson(number,size,id, user, status);
     }
 }

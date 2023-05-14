@@ -12,6 +12,7 @@ public interface CourseUserRepository extends JpaRepository<CourseUser, UserCour
 
     List<CourseUser> findById_CourseId(Long courseId);
     List<CourseUser> findById_UserIdAndAndRole_Name(String userId, UserRole userRole);
+    List<CourseUser> findById_CourseIdAndRole_Name(Long courseId,UserRole userRole);
 
     Boolean existsById_UserIdAndAndRole_Name(String userId, UserRole userRole);
 

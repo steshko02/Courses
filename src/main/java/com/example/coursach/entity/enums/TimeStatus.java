@@ -23,6 +23,13 @@ public enum TimeStatus {
                 .collect(Collectors.toMap(TimeStatus::getVal, Function.identity())));
     }
 
+    public static TimeStatus byString(String value){
+        try {
+          return   TimeStatus.valueOf(value);
+        }catch (IllegalArgumentException e){
+            return null;
+        }
+    }
     public static TimeStatus lookup(int val) {
         return Optional.ofNullable(LOOKUP.get(val))
                 .orElseThrow(() -> new IllegalArgumentException("Unknown value " + val));

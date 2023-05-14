@@ -52,4 +52,16 @@ public abstract class Notification {
         return new ReminderNotification(mailScope, consumerEmail, localisation, objectInfo, username, time);
     }
 
+    public static BookingNotification buildBookingNotification(MessageLocale localisation,
+                                                                MailScope mailScope,
+                                                                String consumerEmail,
+                                                                String courseTitle,
+                                                                String receiverFullName,
+                                                               String action,
+                                                               String courseInfo) {
+        return new BookingNotification(localisation, mailScope, consumerEmail, courseTitle, receiverFullName,action, courseInfo);
+    }
+
+
+
 }

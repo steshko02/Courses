@@ -1,0 +1,5 @@
+Уважаемый {user_name}, ваша заявка на курс {course_title} {action}.
+
+{course_information}.
+
+Kоманда SenlaCourses!

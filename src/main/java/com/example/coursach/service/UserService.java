@@ -18,6 +18,7 @@ import com.example.coursach.repository.CodeRepository;
 import com.example.coursach.repository.CourseUserRepository;
 import com.example.coursach.repository.LessonRepository;
 import com.example.coursach.repository.UserRepository;
+import com.example.coursach.repository.filter.UserSpecification;
 import com.example.coursach.service.converter.UserConverter;
 import com.example.coursach.service.model.LocalMessageCodes;
 import com.example.coursach.service.model.mail.Notification;
@@ -95,8 +96,10 @@ public class UserService {
         return userConverter.userPagedResultToUserPagedDto(users, minioStorageService::getPictureUrl);
     }
 
-    public List<BaseUserInformationDto> getAll() {
-        return userConverter.listUserToListBaseUserInformationDto(userRepository.findAll());
+    public List<BaseUserInformationDto> getAll(String username) {
+
+        List<User> all = userRepository.findAll(UserSpecification.createBookingSpecification(username));
+        return userConverter.listUserToListBaseUserInformationDto(all);
     }
 
 //    public BaseUserInformationDto getBaseUserInformation(String userUuid) {

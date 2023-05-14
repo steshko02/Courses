@@ -31,8 +31,8 @@ public class UserController {
     }
 
     @GetMapping
-    public List<BaseUserInformationDto> getAll() {
-        return userService.getAll();
+    public List<BaseUserInformationDto> getAll(@RequestParam String username) {
+        return userService.getAll(username);
     }
 
     @GetMapping("/mentors/{id}")

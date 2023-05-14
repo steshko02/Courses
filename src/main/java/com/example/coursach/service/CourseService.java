@@ -9,6 +9,7 @@ import com.example.coursach.entity.enums.TimeStatus;
 import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.repository.CourseRepository;
 import com.example.coursach.repository.CourseUserRepository;
+import com.example.coursach.repository.RoleRepository;
 import com.example.coursach.repository.UserRepository;
 import com.example.coursach.service.converter.UserConverter;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,8 +34,9 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseUserRepository courseUserRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-
+    @Transactional(rollbackFor = RuntimeException.class)
     public Long createCourse(CourseDto courseDto) {
 
         Course save = courseRepository.save(courseConverter.toEntity(courseDto));
@@ -49,7 +52,7 @@ public class CourseService {
 
                 CourseUser courseUser = CourseUser.builder()
                         .id(courseId)
-                        .role(Role.builder().name(UserRole.LECTURER).build())
+                        .role(roleRepository.findByName(UserRole.LECTURER))
                         .build();
                 courseUserRepository.save(courseUser);
             });
@@ -66,7 +69,7 @@ public class CourseService {
 
         User userById = userRepository.findUserById(userUuid).orElseThrow(RuntimeException::new);
 
-        List<CourseUser> allByUserCourseIdCourseId = courseUserRepository.findById_CourseId(id);
+        List<CourseUser> allByUserCourseIdCourseId = courseUserRepository.findById_CourseIdAndRole_Name(id,UserRole.LECTURER);
 
         List<User> users = userRepository.
                 findAllByIds(allByUserCourseIdCourseId.stream()

@@ -5,8 +5,10 @@ import com.example.coursach.converters.CheckWorkConvertor;
 import com.example.coursach.converters.WorkConverter;
 import com.example.coursach.dto.*;
 import com.example.coursach.entity.*;
+import com.example.coursach.entity.enums.BookingStatus;
 import com.example.coursach.entity.enums.TimeStatus;
 import com.example.coursach.repository.*;
+import com.example.coursach.repository.filter.AnswerSpecification;
 import com.example.coursach.service.converter.UserConverter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.utils.Lists;
@@ -53,12 +55,12 @@ public class AnswerService {
     }
 
     private TimeStatus checkTime(LocalDateTime deadline){
-        if(LocalDateTime.now().isAfter(deadline))
+        if(LocalDateTime.now().isBefore(deadline))
             return TimeStatus.DURING;
         return TimeStatus.FINISHED;
     }
 
-    public PaginationAnswerDto getByLesson(Integer number, Integer size, Long id) {
+    public PaginationAnswerDto getByLesson(Integer number, Integer size, Long id, String user, String status) {
         //сделать проверку на ментора
 
         Lesson lesson = lessonRepository.findById(id).orElseThrow(RuntimeException::new);
@@ -71,7 +73,12 @@ public class AnswerService {
                     .answers(new ArrayList<>())
                     .build();
         }
-        Page<Answer> answers = answerRepository.findByWork_Id(lesson.getWork().getId(), PageRequest.of(number, size));
+
+        Page<Answer> answers = answerRepository.findAll(
+                AnswerSpecification.creatAnswerSpecification(lesson.getWork().getId(), user,
+                        TimeStatus.byString(status)),
+                PageRequest.of(number, size));
+//        Page<Answer> answers = answerRepository.findByWork_Id(lesson.getWork().getId(), PageRequest.of(number, size));
 
         Map<Long, CheckWork> checkWorkMap = checkWorkRepository.findAllByAnswer_IdIn(answers.get().map(Answer::getId).collect(Collectors.toList()))
                 .stream().collect(

@@ -26,6 +26,7 @@ public class CourseDtoWithMentors {
     private final CourseType type;
     private final TimeStatus status;
     private final Integer size;
+    private final Integer busy;
 
     private final List<BaseUserInformationDto> mentors;
 

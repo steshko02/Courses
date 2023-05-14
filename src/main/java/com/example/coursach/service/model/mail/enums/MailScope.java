@@ -13,7 +13,9 @@ public enum MailScope {
 
     RECOVERY("recovery-{locale}"),
 
-    REMINDING("reminding-{locale}");
+    REMINDING("reminding-{locale}"),
+
+    BOOKING("booking-{locale}");
 
 
     private final String templateLocation;
