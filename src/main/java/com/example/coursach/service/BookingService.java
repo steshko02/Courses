@@ -129,8 +129,6 @@ public class BookingService {
                 .findAll(BookingSpecification.createBookingSpecification(courseStr,user,status),
                         PageRequest.of(number, size));
 
-
-//         coursePage = bookingRepository.findAllByStatus(status,PageRequest.of(number, size));
         List<BookingDto> collect = coursePage.get().map(book -> {
                     BaseUserInformationDto baseUserInformationDto = userConverter.userToBaseUserInformationDto(book.getUser());
                     Course course = book.getCourse();
