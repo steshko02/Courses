@@ -4,6 +4,7 @@ import com.example.coursach.dto.profile.CreateProfileDto;
 import com.example.coursach.dto.profile.ProfileInfoDto;
 import com.example.coursach.dto.profile.UpdateProfileDto;
 import com.example.coursach.entity.Profile;
+import com.example.coursach.entity.User;
 import com.example.coursach.exception.profile.ProfileAlreadyExistException;
 import com.example.coursach.exception.profile.ProfileNotFoundException;
 import com.example.coursach.exception.user.UserNotFoundException;
@@ -12,6 +13,8 @@ import com.example.coursach.repository.UserRepository;
 import com.example.coursach.service.converter.ProfileConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class ProfileService {
@@ -37,10 +40,12 @@ public class ProfileService {
         }
 
         Profile profile = profileConverter.toEntity(profileDto);
+        Optional<User> byId = userRepository.findById(authorizedUserUuid);
         profile.setUser(
-                userRepository.findById(authorizedUserUuid).orElseThrow(UserNotFoundException::new)
+                byId.orElseThrow(UserNotFoundException::new)
         );
-        profileRepository.save(profile);
+        byId.get().setProfile(profile);
+        userRepository.save(byId.get());
     }
 
     @Transactional
@@ -54,7 +59,11 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public ProfileInfoDto getProfile(String authorizedUserUuid) {
         Profile profile = profileRepository.findById(authorizedUserUuid).orElseThrow(ProfileNotFoundException::new);
-        return profileConverter.toDto(profile);
+        ProfileInfoDto dto = profileConverter.toDto(profile);
+        dto.setEmail(profile.getUser().getEmail());
+        dto.setLastname(profile.getUser().getLastname());
+        dto.setFirstname(profile.getUser().getFirstname());
+        return dto;
     }
 
 }

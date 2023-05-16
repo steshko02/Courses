@@ -26,6 +26,9 @@ public class UpdateProfileDto {
     @Size(max = 60)
     private final String jobTitle;
 
+    @Size(max = 60)
+    private final String phoneNumber;
+
     @Size(max = 256)
     private final String other;
 

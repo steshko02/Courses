@@ -23,7 +23,8 @@ public class ProfileConverter {
                 .githubUrl(createProfileDto.getGithubUrl())
                 .department(createProfileDto.getDepartment())
                 .other(createProfileDto.getOther())
-                .nickname(createProfileDto.getNickname())
+                .phone(createProfileDto.getPhoneNumber())
+                .experience(createProfileDto.getExperience())
                 .build();
     }
 
@@ -34,19 +35,20 @@ public class ProfileConverter {
                 .githubUrl(createProfileDto.getGithubUrl())
                 .department(createProfileDto.getDepartment())
                 .other(createProfileDto.getOther())
-                .nickname(createProfileDto.getNickname())
+                .phone(createProfileDto.getPhoneNumber())
                 .build();
     }
 
     public ProfileInfoDto toDto(Profile profile) {
         return ProfileInfoDto
                 .builder()
-                .nickname(profile.getNickname())
-                .photoUrl(profile.getPictureFormat())
+                .photoUrl(profile.getPhotoUrl())
                 .department(profile.getDepartment())
                 .githubUrl(profile.getGithubUrl())
                 .jobTitle(profile.getJobTitle())
                 .other(profile.getOther())
+                .experience(profile.getExperience())
+                .number(profile.getPhone())
                 .build();
     }
 

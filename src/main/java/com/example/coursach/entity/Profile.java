@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "profiles")
-public class    Profile {
+public class Profile {
 
     @Id
     @Column(name = "user_id", unique = true)
@@ -45,11 +45,14 @@ public class    Profile {
     @Column(name = "githuburl")
     private String githubUrl;
 
-    @Column(name = "nickname")
-    private String nickname;
+    @Column(name = "phone")
+    private String phone;
 
     @Column(name = "picture_format")
     private String pictureFormat;
+
+    @Column(name = "experience")
+    private String experience;
 
     @MapsId
     @JoinColumn(name = "user_id")

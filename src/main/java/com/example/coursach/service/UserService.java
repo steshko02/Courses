@@ -123,7 +123,7 @@ public class UserService {
                         currentUserRequestLocaleService.getCurrentLocale(),
                         MailScope.RECOVERY,
                         currentUser.getEmail(),
-                        currentUser.getProfile().getNickname(),
+                        currentUser.getProfile().getUser().getFirstname() + " " + currentUser.getProfile().getUser().getLastname(),
                         recoveryCode.getCode()
                 )
         );
@@ -170,9 +170,9 @@ public class UserService {
 
         List<User> users = userRepository.
                 findAllByIds(allByUserCourseIdCourseId.stream()
-                        .map(x->x.getId().getUserId()).collect(Collectors.toList()));
+                        .map(x -> x.getId().getUserId()).collect(Collectors.toList()));
 
-       return userConverter.listUserToListBaseUserInformationDto(users);
+        return userConverter.listUserToListBaseUserInformationDto(users);
     }
 
     public List<BaseUserInformationDto> getMentorsOnLesson(Long lessonId) {

@@ -1,11 +1,9 @@
 package com.example.coursach.dto.profile;
 
-import com.example.coursach.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -13,12 +11,10 @@ import javax.validation.constraints.Size;
 @Jacksonized
 public class CreateProfileDto {
 
-    @NotBlank(message = ErrorCode.WEAK_NICKNAME)
-    @Size(max = 20, message = ErrorCode.WEAK_NICKNAME)
-    private final String nickname;
-    // add validation
     @Size(max = 64)
     private final String department;
+    @Size(max = 20)
+    private final String phoneNumber;
     // regex
     @Size(max = 160)
     private final String githubUrl;
@@ -28,5 +24,9 @@ public class CreateProfileDto {
 
     @Size(max = 256)
     private final String other;
+
+    @Size(max = 256)
+    private final String experience;
+
 
 }

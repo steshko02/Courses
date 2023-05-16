@@ -176,7 +176,6 @@ public class MinioStorageService {
                 minioProperties.getAvatarsDirectoryPath());
 
         Profile profile = profileRepository.findById(userUuid).orElseThrow(ProfileNotFoundException::new);
-
         Optional<String> pictureFormat = Optional.ofNullable(profile.getPictureFormat());
 
         pictureFormat.ifPresent(p -> amazonS3Client
@@ -186,6 +185,8 @@ public class MinioStorageService {
         amazonS3Client.putObject(new PutObjectRequest(minioProperties.getUserAvatarsBucket(),
                 finalFilename, fileToUpload));
 
+        profile.setPhotoUrl(getObjectUrl(minioProperties.getUserAvatarsBucket(), finalFilename, ""));
+        profileRepository.save(profile);
         User currentUser = userRepository.findUserByIdWithFetchProfile(userUuid)
                 .orElseThrow(UserNotFoundException::new);
         currentUser.getProfile().setPictureFormat(Extractors.extractPictureFormat(photoToUpload.getOriginalFilename()));
