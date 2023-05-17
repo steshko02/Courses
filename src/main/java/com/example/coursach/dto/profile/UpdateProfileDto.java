@@ -13,12 +13,11 @@ import javax.validation.constraints.Size;
 @Jacksonized
 public class UpdateProfileDto {
 
-    @NotBlank(message = ErrorCode.WEAK_NICKNAME)
-    @Size(max = 20, message = ErrorCode.WEAK_NICKNAME)
-    private final String nickname;
-    // add validation
     @Size(max = 64)
     private final String department;
+
+    @Size(min = 13, max = 20)
+    private final String phoneNumber;
     // regex
     @Size(max = 160)
     private final String githubUrl;
@@ -26,10 +25,19 @@ public class UpdateProfileDto {
     @Size(max = 60)
     private final String jobTitle;
 
-    @Size(max = 60)
-    private final String phoneNumber;
-
     @Size(max = 256)
     private final String other;
+
+    @Size(max = 256)
+    private final String experience;
+
+    @Size(min = 2, max = 64)
+    private String firstname;
+
+    @Size(min = 2, max = 64)
+    private String lastname;
+
+    @Size(min = 2, max = 64)
+    private String email;
 
 }

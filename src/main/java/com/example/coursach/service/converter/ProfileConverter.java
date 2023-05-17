@@ -36,6 +36,7 @@ public class ProfileConverter {
                 .department(createProfileDto.getDepartment())
                 .other(createProfileDto.getOther())
                 .phone(createProfileDto.getPhoneNumber())
+                .experience(createProfileDto.getExperience())
                 .build();
     }
 

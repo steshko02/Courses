@@ -50,19 +50,47 @@ public class ProfileService {
 
     @Transactional
     public void updateProfile(UpdateProfileDto profileDto, String authorizedUserUuid) {
-        Profile profile = profileRepository.findById(authorizedUserUuid).orElseThrow(ProfileNotFoundException::new);
-        profile = profileConverter.toEntity(profileDto);
 
-        profileRepository.save(profile);
+        Profile profile = profileRepository.findById(authorizedUserUuid).orElseThrow(ProfileNotFoundException::new);
+
+        profile = profileConverter.toEntity(profileDto);
+        profile.setUserId(authorizedUserUuid);
+
+        Optional<User> user = userRepository.findById(authorizedUserUuid);
+        user.ifPresent(x -> {
+            x.setFirstname(profileDto.getFirstname());
+            x.setLastname(profileDto.getLastname());
+            x.setEmail(profileDto.getEmail());
+        });
+
+        if (user.isPresent()) {
+            profile.setUser(user.get());
+            profileRepository.save(profile);
+            user.get().setProfile(profile);
+            userRepository.save(user.get());
+        }
+
     }
 
     @Transactional(readOnly = true)
     public ProfileInfoDto getProfile(String authorizedUserUuid) {
-        Profile profile = profileRepository.findById(authorizedUserUuid).orElseThrow(ProfileNotFoundException::new);
-        ProfileInfoDto dto = profileConverter.toDto(profile);
-        dto.setEmail(profile.getUser().getEmail());
-        dto.setLastname(profile.getUser().getLastname());
-        dto.setFirstname(profile.getUser().getFirstname());
+        Optional<Profile> profile = profileRepository.findById(authorizedUserUuid);
+        ProfileInfoDto dto = null;
+        if (profile.isPresent()) {
+            dto = profileConverter.toDto(profile.get());
+            dto.setEmail(profile.get().getUser().getEmail());
+            dto.setLastname(profile.get().getUser().getLastname());
+            dto.setFirstname(profile.get().getUser().getFirstname());
+            dto.setId(profile.get().getUserId());
+        } else {
+            Optional<User> userById = userRepository.findUserById(authorizedUserUuid);
+            if (userById.isPresent()) {
+                dto = ProfileInfoDto.builder().build();
+                dto.setEmail(userById.get().getEmail());
+                dto.setLastname(userById.get().getLastname());
+                dto.setFirstname(userById.get().getFirstname());
+            }
+        }
         return dto;
     }
 

@@ -11,6 +11,8 @@ import lombok.extern.jackson.Jacksonized;
 @Setter
 public class ProfileInfoDto {
 
+    private String id;
+
     private String firstname;
 
     private String lastname;
