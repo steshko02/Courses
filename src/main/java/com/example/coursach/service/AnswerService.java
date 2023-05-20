@@ -78,7 +78,6 @@ public class AnswerService {
                 AnswerSpecification.creatAnswerSpecification(lesson.getWork().getId(), user,
                         TimeStatus.byString(status)),
                 PageRequest.of(number, size));
-//        Page<Answer> answers = answerRepository.findByWork_Id(lesson.getWork().getId(), PageRequest.of(number, size));
 
         Map<Long, CheckWork> checkWorkMap = checkWorkRepository.findAllByAnswer_IdIn(answers.get().map(Answer::getId).collect(Collectors.toList()))
                 .stream().collect(
@@ -97,6 +96,7 @@ public class AnswerService {
                 .comment(a.getComment())
                 .workId(a.getWork().getId())
                 .user(userConverter.userToBaseUserInformationDto(a.getUser()))
+                .workTitle(lesson.getWork().getTitle())
                 .id(a.getId())
                 .build()
         ).toList();

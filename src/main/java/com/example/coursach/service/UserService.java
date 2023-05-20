@@ -11,6 +11,7 @@ import com.example.coursach.entity.CourseUser;
 import com.example.coursach.entity.Lesson;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.enums.AccountStatus;
+import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.exception.user.InvalidCodeException;
 import com.example.coursach.exception.user.UserNotFoundException;
 import com.example.coursach.exception.user.WeakPasswordException;
@@ -166,7 +167,7 @@ public class UserService {
     }
 
     public List<BaseUserInformationDto> getMentorsOnCourse(Long id) {
-        List<CourseUser> allByUserCourseIdCourseId = courseUserRepository.findById_CourseId(id);
+        List<CourseUser> allByUserCourseIdCourseId = courseUserRepository.findById_CourseIdAndAndRole_Name(id, UserRole.LECTURER);
 
         List<User> users = userRepository.
                 findAllByIds(allByUserCourseIdCourseId.stream()

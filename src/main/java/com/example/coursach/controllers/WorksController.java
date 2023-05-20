@@ -1,5 +1,6 @@
 package com.example.coursach.controllers;
 
+import com.example.coursach.dto.LessonDtoWithMentors;
 import com.example.coursach.dto.WorkDto;
 import com.example.coursach.dto.picture.StatusDto;
 import com.example.coursach.security.model.AuthorizedUser;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,7 +31,7 @@ public class WorksController {
 
     @PostMapping
     @ResponseBody
-    public Long bookings(@RequestBody WorkDto workDto) {
+    public Long create(@RequestBody WorkDto workDto) {
         return workService.createWork(workDto);
     }
 
@@ -51,5 +53,12 @@ public class WorksController {
                                 @PathVariable Long workId,
                                 @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         return minioStorageService.uploadWorkObj(picture, courseId, lessonId,workId);
+    }
+
+    @GetMapping("/byLesson/{lessId}")
+    @ResponseBody
+    public WorkDto getById(@PathVariable("lessId") Long lessId,
+                                    @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return workService.getBylessId(lessId,authorizedUser.getUuid());
     }
 }

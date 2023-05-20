@@ -58,10 +58,9 @@ public class LessonConverter {
                 .build();
     }
 
-
-
     public LessonDtoWithMentors toDto(Lesson lesson, List<BaseUserInformationDto> mentors, Optional<WorkDto> workDto) {
         return LessonDtoWithMentors.builder()
+                .id(lesson.getId())
                 .courseId(lesson.getCourse().getId())
                 .description(lesson.getDescription())
                 .title(lesson.getTitle())

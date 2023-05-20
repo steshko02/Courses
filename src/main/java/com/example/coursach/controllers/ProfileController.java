@@ -11,6 +11,7 @@ import com.example.coursach.service.ProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +51,11 @@ public class ProfileController {
     @GetMapping
     public ProfileInfoDto getProfileOfCurrentUser(@AuthenticationPrincipal AuthorizedUser authorizedUser) {
         return profileService.getProfile(authorizedUser.getUuid());
+    }
+
+    @GetMapping("/user/{id}")
+    public ProfileInfoDto getProfileOfUserById(@PathVariable String id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return profileService.getProfile(id);
     }
 
     @PostMapping("/avatar")

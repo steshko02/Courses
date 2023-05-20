@@ -1,6 +1,5 @@
 package com.example.coursach.repository.custom.impl;
 
-import com.example.coursach.entity.Profile_;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.User_;
 import com.example.coursach.entity.enums.AccountStatus;
@@ -149,8 +148,6 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
         return resultList.stream().findFirst();
     }
 
-
-
     private EntityGraph<User> getEntityGraphWithFetchToProfile() {
         EntityGraph<User> entityGraph = em.createEntityGraph(User.class);
         entityGraph.addAttributeNodes(User_.PROFILE);
@@ -166,8 +163,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
         String percentStr = "%";
         return cb.and(
                 cb.or(
-                        cb.like(cb.lower(root.get(User_.EMAIL)), queryStr.toLowerCase() + percentStr),
-                        cb.like(cb.lower(root.join(User_.profile).get(Profile_.NICKNAME)), queryStr.toLowerCase() + percentStr)
+                        cb.like(cb.lower(root.get(User_.EMAIL)), queryStr.toLowerCase() + percentStr)
                 ),
                 cb.equal(root.get(User_.ACCOUNT_STATUS), accountStatus)
         );

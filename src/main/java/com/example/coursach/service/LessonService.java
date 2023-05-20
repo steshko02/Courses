@@ -34,13 +34,32 @@ public class LessonService {
     private final AnswerConverter answerConverter;
     private final CheckWorkRepository checkWorkRepository;
     private final CheckWorkConvertor checkWorkConvertor;
+
+
     public Long createLesson(LessonDto lessonDto) {
         Course course = courseRepository.findById(lessonDto.getCourseId())
                 .orElseThrow(RuntimeException::new);
-
         List<User> userList = userRepository.findAllByIds(lessonDto.getUserIds());
+        Lesson entity = lessonConverter.toEntity(lessonDto, course, userList);
 
-        return lessonRepository.save(lessonConverter.toEntity(lessonDto, course, userList)).getId();
+        if (lessonDto.getId() != null) {
+            Optional<Lesson> byId = lessonRepository.findById(lessonDto.getId());
+
+            byId.ifPresent(
+                    lesson -> {
+                        lesson.setDescription(entity.getDescription());
+                        lesson.setStatus(entity.getStatus());
+                        lesson.setTitle(entity.getTitle());
+                        lesson.setStart(entity.getStart());
+                        lesson.setEnd(entity.getEnd());
+                        lesson.setMentors(entity.getMentors());
+                        lessonRepository.save(lesson);
+                    }
+            );
+            return byId.get().getId();
+        } else {
+            return lessonRepository.save(entity).getId();
+        }
     }
 
     public LessonDtoWithMentors getById(Long id, String userUuid) {
@@ -74,7 +93,7 @@ public class LessonService {
                         ).orElse(null));
             }
             if (x.getRole().getName().equals(UserRole.STUDENT))
-                 lessonDtoWithMentors.setStudentId(userUuid);
+                lessonDtoWithMentors.setStudentId(userUuid);
             else if (x.getRole().getName().equals(UserRole.LECTURER))
                 lessonDtoWithMentors.setMentorId(userUuid);
         });
