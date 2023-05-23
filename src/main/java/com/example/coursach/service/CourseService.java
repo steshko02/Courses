@@ -60,6 +60,38 @@ public class CourseService {
         return save.getId();
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
+    public Long updateCourse(CourseDto courseDto) {
+
+        Course course = courseRepository.findById(courseDto.getId()).orElseThrow(RuntimeException::new);
+        Course newCourse = courseConverter.toEntity(courseDto);
+
+        List<String> ids = courseDto.getIds();
+        if (ids != null && !ids.isEmpty()) {
+            ids.forEach(u -> {
+
+                UserCourseId courseId = UserCourseId.builder()
+                        .userId(u)
+                        .courseId(course.getId())
+                        .build();
+
+                CourseUser courseUser = CourseUser.builder()
+                        .id(courseId)
+                        .role(roleRepository.findByName(UserRole.LECTURER))
+                        .build();
+                courseUserRepository.save(courseUser);
+            });
+        }
+
+        course.setSize(newCourse.getSize());
+        course.setTitle(newCourse.getTitle());
+        course.setDescription(newCourse.getDescription());
+        course.setLessons(newCourse.getLessons());
+        course.setStart(newCourse.getStart());
+        course.setEnd(newCourse.getEnd());
+        return course.getId();
+    }
+
     public List<CourseDto> getAll() {
         return courseConverter
                 .toDtos(courseRepository.findAll());

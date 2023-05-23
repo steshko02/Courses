@@ -40,6 +40,11 @@ public class CoursesController {
        return courseService.createCourse(courseDto);
     }
 
+    @PutMapping
+    public Long update(@RequestBody CourseDto courseDto) {
+       return courseService.updateCourse(courseDto);
+    }
+
     @PostMapping("/picture")
     @PreAuthorize("hasRole('ADMIN')")
     public StatusDto uploadPicture(@RequestParam("file") MultipartFile picture, @RequestParam("courseId") Long id) {
