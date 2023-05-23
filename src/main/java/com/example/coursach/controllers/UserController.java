@@ -3,9 +3,11 @@ package com.example.coursach.controllers;
 import com.example.coursach.dto.pagable.PageableRequestDto;
 import com.example.coursach.dto.user.BaseUserInformationDto;
 import com.example.coursach.dto.user.UserPagedDto;
+import com.example.coursach.security.model.AuthorizedUser;
 import com.example.coursach.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +45,11 @@ public class UserController {
     @GetMapping("/mentors/lesson/{id}")
     public List<BaseUserInformationDto> getMentorsOnLesson(@PathVariable("id") Long lessonId) {
         return userService.getMentorsOnLesson(lessonId);
+    }
+
+    @GetMapping("/me")
+    public BaseUserInformationDto getCurrentUser(@AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return userService.getById(authorizedUser.getUuid());
     }
 
 }

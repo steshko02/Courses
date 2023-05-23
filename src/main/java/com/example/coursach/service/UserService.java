@@ -182,4 +182,8 @@ public class UserService {
 
         return userConverter.listUserToListBaseUserInformationDto(byId.get().getMentors());
     }
+
+    public BaseUserInformationDto getById(String uuid) {
+        return userConverter.userToBaseUserInformationDto(userRepository.findById(uuid).get());
+    }
 }

@@ -66,9 +66,6 @@ public class WorkService {
 
     public WorkDto getBylessId(Long lessId, String uuid) {
 
-        Work work = lessonRepository.findById(lessId).map(Lesson::getWork)
-                .orElseThrow(RuntimeException::new);
-
-        return Optional.ofNullable(work).map(workConverter::toDto).orElse(WorkDto.builder().build());
+        return lessonRepository.findById(lessId).map(Lesson::getWork).map(workConverter::toDto).orElse(WorkDto.builder().build());
     }
 }
