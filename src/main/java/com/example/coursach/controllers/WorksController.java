@@ -1,6 +1,5 @@
 package com.example.coursach.controllers;
 
-import com.example.coursach.dto.LessonDtoWithMentors;
 import com.example.coursach.dto.WorkDto;
 import com.example.coursach.dto.picture.StatusDto;
 import com.example.coursach.security.model.AuthorizedUser;
@@ -22,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.AccessDeniedException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("works")
@@ -31,19 +32,19 @@ public class WorksController {
 
     @PostMapping
     @ResponseBody
-    public Long create(@RequestBody WorkDto workDto) {
-        return workService.createWork(workDto);
+    public Long create(@RequestBody WorkDto workDto, @AuthenticationPrincipal AuthorizedUser authorizedUser) throws AccessDeniedException {
+        return workService.createWork(workDto,authorizedUser.getUuid());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
-        workService.deleteWork(id);
+    public void delete(@PathVariable("id") Long id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        workService.deleteWork(id,authorizedUser.getUuid());
     }
 
     @PutMapping
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void updateWork(@RequestBody WorkDto workDto) {
-        workService.update(workDto);
+    public void updateWork(@RequestBody WorkDto workDto,  @AuthenticationPrincipal AuthorizedUser authorizedUser) throws AccessDeniedException {
+        workService.update(workDto, authorizedUser.getUuid());
     }
 
     @PostMapping("/upload/{courseId}/{lessonId}/{workId}")

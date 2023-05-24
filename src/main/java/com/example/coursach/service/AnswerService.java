@@ -7,6 +7,7 @@ import com.example.coursach.dto.*;
 import com.example.coursach.entity.*;
 import com.example.coursach.entity.enums.BookingStatus;
 import com.example.coursach.entity.enums.TimeStatus;
+import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.repository.*;
 import com.example.coursach.repository.filter.AnswerSpecification;
 import com.example.coursach.service.converter.UserConverter;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +39,16 @@ public class AnswerService {
     private final AnswerConverter answerConverter;
     private final CheckWorkRepository checkWorkRepository;
     private final CheckWorkConvertor checkWorkConvertor;
+    private final UserService userService;
 
-    public Long createAnswer(AnswerDto answerDto, String uuid) {
+    public Long createAnswer(AnswerDto answerDto, String uuid) throws AccessDeniedException {
         User user = userRepository.findById(uuid).orElseThrow(RuntimeException::new);
         Work work = workRepository.findById(answerDto.getWorkId()).orElseThrow(RuntimeException::new);
 
-        //чекать на то что юзер - ученик на курсе
+        if(userService.getByRoleAndLessonOnCourse(uuid,work.getLesson().getId(), UserRole.STUDENT).isEmpty()){
+            throw new AccessDeniedException("You has not permission for this operation");
+        }
+
         Answer answer = Answer.builder()
                 .comment(answerDto.getComment())
                 .user(user)
@@ -60,10 +66,12 @@ public class AnswerService {
         return TimeStatus.FINISHED;
     }
 
-    public PaginationAnswerDto getByLesson(Integer number, Integer size, Long id, String user, String status) {
+    public PaginationAnswerDto getByLesson(Integer number, Integer size, Long id, String user, String status, String uuid) throws AccessDeniedException {
         //сделать проверку на ментора
-
         Lesson lesson = lessonRepository.findById(id).orElseThrow(RuntimeException::new);
+        if(userService.getByRoleAndLessonOnCourse(uuid,lesson.getId(), UserRole.LECTURER).isEmpty()){
+            throw new AccessDeniedException("You has not permission for this operation");
+        }
 
         if(lesson.getWork()==null){
             return PaginationAnswerDto.builder()
@@ -109,11 +117,15 @@ public class AnswerService {
                 .build();
     }
 
-    public Long update(AnswerDto answerDto, String uuid) {
+    public Long update(AnswerDto answerDto, String uuid) throws AccessDeniedException {
         User user = userRepository.findById(uuid).orElseThrow(RuntimeException::new);
         Work work = workRepository.findById(answerDto.getWorkId()).orElseThrow(RuntimeException::new);
 
         //чекать на то что юзер - ученик на курсе
+        if(userService.getByRoleAndLessonOnCourse(uuid,work.getLesson().getId(), UserRole.LECTURER).isEmpty()){
+            throw new AccessDeniedException("You has not permission for this operation");
+        }
+
         Answer answer = Answer.builder()
                 .id(answerDto.getId())
                 .comment(answerDto.getComment())

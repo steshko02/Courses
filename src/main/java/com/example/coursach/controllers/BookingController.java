@@ -5,6 +5,7 @@ import com.example.coursach.entity.enums.BookingStatus;
 import com.example.coursach.security.model.AuthorizedUser;
 import com.example.coursach.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,35 +22,33 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingController {
     private final BookingService bookingService;
 
-//    @PostMapping
-//    @ResponseBody
-//    public CourseDto bookings(@RequestBody BookingDto bookingDto) {
-//       return bookingService.createBookings(bookingDto);
-//    }
-
     @PostMapping("/{courseId}")
-//    @ResponseBody
+    @PreAuthorize("hasRole('USER')")
     public Long bookCourse(@PathVariable("courseId") Long id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
        return bookingService.createBookings(id,authorizedUser.getUuid());
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable("id") Long id) {
         bookingService.deleteBookings(id);
     }
 
     @PostMapping("approve/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void approve(@PathVariable("id") Long id) {
         bookingService.approve(id);
     }
 
     @PostMapping("canceled/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void cancel(@PathVariable("id") Long id) {
         bookingService.canceled(id);
     }
 
     @GetMapping("/all")
     @ResponseBody
+    @PreAuthorize("hasRole('ADMIN')")
     public PaginationBookingDto getAll(@RequestParam("number") Integer number,
                                        @RequestParam("size") Integer size,
                                        @RequestParam ("status")String status,

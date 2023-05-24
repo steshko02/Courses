@@ -15,6 +15,7 @@ import com.example.coursach.service.converter.UserConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +35,17 @@ public class LessonService {
     private final AnswerConverter answerConverter;
     private final CheckWorkRepository checkWorkRepository;
     private final CheckWorkConvertor checkWorkConvertor;
+    private final UserService userService;
 
 
-    public Long createLesson(LessonDto lessonDto) {
+    public Long createLesson(LessonDto lessonDto, String uuid) throws AccessDeniedException {
+
+        Optional<User> userById = userRepository.findUserById(uuid);
+
+        if(userService.getByRoleOnCourse(uuid,lessonDto.getCourseId(),UserRole.LECTURER).isEmpty()
+                && userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
+            throw new AccessDeniedException("You has not permission for this operation");
+        }
         Course course = courseRepository.findById(lessonDto.getCourseId())
                 .orElseThrow(RuntimeException::new);
         List<User> userList = userRepository.findAllByIds(lessonDto.getUserIds());
@@ -101,7 +110,13 @@ public class LessonService {
     }
 
 
-    public void update(LessonDto lessonDto) {
+    public void update(LessonDto lessonDto, String uuid) throws AccessDeniedException {
+        Optional<User> userById = userRepository.findUserById(uuid);
+        if(userService.getByRoleOnCourse(uuid,lessonDto.getCourseId(),UserRole.LECTURER).isEmpty()
+                && userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
+            throw new AccessDeniedException("You has not permission for this operation");
+        }
+        
         Course course = courseRepository.findById(lessonDto.getCourseId())
                 .orElseThrow(RuntimeException::new);
 
@@ -113,7 +128,13 @@ public class LessonService {
         lessonRepository.save(newLesson);
     }
 
-    public Long deleteById(Long id) {
+    public Long deleteById(Long id, String uuid) throws AccessDeniedException {
+
+        Optional<User> userById = userRepository.findUserById(uuid);
+        if(userService.getByRoleAndLessonOnCourse(uuid,id,UserRole.LECTURER).isEmpty()
+                && userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
+            throw new AccessDeniedException("You has not permission for this operation");
+        }
         lessonRepository.deleteById(id);
         return id;
     }

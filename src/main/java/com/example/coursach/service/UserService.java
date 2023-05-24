@@ -103,12 +103,6 @@ public class UserService {
         return userConverter.listUserToListBaseUserInformationDto(all);
     }
 
-//    public BaseUserInformationDto getBaseUserInformation(String userUuid) {
-//        User currentUser = userRepository.findUserByIdWithFetchProfile(userUuid)
-//                .orElseThrow(UserNotFoundException::new);
-//        return userConverter.userToBaseUserInformationDto(currentUser, minioStorageService::getPictureUrl);
-//    }
-
     public StatusDto passwordRecovery(RecoveryRequestDto recoveryRequestDto) {
         User currentUser = userRepository.findUserByEmailExcludedInvitedWithFetchProfile(recoveryRequestDto.getEmail())
                 .orElseThrow(UserNotFoundException::new);
@@ -185,5 +179,13 @@ public class UserService {
 
     public BaseUserInformationDto getById(String uuid) {
         return userConverter.userToBaseUserInformationDto(userRepository.findById(uuid).get());
+    }
+
+    public Optional<CourseUser> getByRoleOnCourse(String uuid, Long courseId, UserRole userRole) {
+        return courseUserRepository.findById_CourseIdAndId_UserIdAndRole_Name(courseId, uuid, userRole);
+    }
+    public Optional<CourseUser> getByRoleAndLessonOnCourse(String uuid, Long lessId, UserRole userRole) {
+        Lesson lesson = lessonRepository.findById(lessId).orElseThrow(RuntimeException::new);
+        return courseUserRepository.findById_CourseIdAndId_UserIdAndRole_Name(lesson.getCourse().getId(), uuid, userRole);
     }
 }

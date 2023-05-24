@@ -23,11 +23,6 @@ public class UploadFileController {
     private final FileLoaderService uploadService;
     private final AmazonS3 s3Client;
 
-    @PostMapping
-    public Long createLesson(@RequestBody LessonDto lessonDto) {
-      return   lessonService.createLesson(lessonDto);
-    }
-
     @GetMapping("/presigned-aws-url/{courseId}/{lessonId}/{ext}")
     @ResponseBody
     public String getPresignedUrl(@PathVariable Long courseId,

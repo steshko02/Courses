@@ -4,6 +4,7 @@ import com.example.coursach.config.properties.JwtProperties;
 import com.example.coursach.dto.error.ErrorMessageDto;
 import com.example.coursach.dto.security.LoginRequestDto;
 import com.example.coursach.dto.user.security.JwtResponseDto;
+import com.example.coursach.exception.ErrorCode;
 import com.example.coursach.exception.user.InvalidUsernameOrPasswordException;
 import com.example.coursach.security.model.AuthorizedUser;
 import com.example.coursach.security.utils.JwtTokenProvider;

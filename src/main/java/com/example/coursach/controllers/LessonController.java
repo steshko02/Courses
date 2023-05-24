@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.AccessDeniedException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("lessons")
@@ -31,8 +33,8 @@ public class LessonController {
     private final MinioStorageService minioStorageService;
 
     @PostMapping
-    public Long createLesson(@RequestBody LessonDto lessonDto) {
-        return lessonService.createLesson(lessonDto);
+    public Long createLesson(@RequestBody LessonDto lessonDto, @AuthenticationPrincipal AuthorizedUser authorizedUser) throws AccessDeniedException {
+        return lessonService.createLesson(lessonDto, authorizedUser.getUuid());
     }
 
     @GetMapping("/{id}")
@@ -43,8 +45,8 @@ public class LessonController {
 
     @PutMapping
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void updateLesson(@RequestBody LessonDto lessonDto) {
-        lessonService.update(lessonDto);
+    public void updateLesson(@RequestBody LessonDto lessonDto, @AuthenticationPrincipal AuthorizedUser authorizedUser) throws AccessDeniedException {
+        lessonService.update(lessonDto,authorizedUser.getUuid());
     }
 
     @PostMapping("/upload/{courseId}/{lessonId}")
@@ -54,8 +56,8 @@ public class LessonController {
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public Long delete(@PathVariable("id") Long id) {
-        return lessonService.deleteById(id);
+    public Long delete(@PathVariable("id") Long id,@AuthenticationPrincipal AuthorizedUser authorizedUser) throws AccessDeniedException {
+        return lessonService.deleteById(id,authorizedUser.getUuid());
     }
 
 }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("check_work")
@@ -16,15 +18,7 @@ public class СheckWorkController {
 
     @PostMapping
     @ResponseBody
-    public Long create(@RequestBody CheckWorkDto checkWorkDto, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+    public Long create(@RequestBody CheckWorkDto checkWorkDto, @AuthenticationPrincipal AuthorizedUser authorizedUser) throws AccessDeniedException {
         return checkWorkService.createAnswer(checkWorkDto, authorizedUser.getUuid());
     }
-
-//    @GetMapping("byLesson/{id}")
-//    @ResponseBody
-//    public PaginationAnswerDto getAll(@RequestParam("number") Integer number,
-//                                      @RequestParam("size") Integer size,
-//                                      @PathVariable("id") Long id) {
-//        return answerService.getByLesson(number,size,id);
-//    }
 }

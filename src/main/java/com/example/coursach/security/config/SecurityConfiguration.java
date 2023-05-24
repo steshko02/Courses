@@ -34,11 +34,9 @@ import static com.example.coursach.controllers.AccountController.REGISTRATION_PA
 public class SecurityConfiguration {
 
     private final JwtTokenFilter jwtTokenFilter;
-//    private final CORSFilter corsFilter;
 
     public SecurityConfiguration(JwtTokenFilter jwtTokenFilter) {
         this.jwtTokenFilter = jwtTokenFilter;
-//        this.corsFilter = corsFilter;
     }
 
     @Bean

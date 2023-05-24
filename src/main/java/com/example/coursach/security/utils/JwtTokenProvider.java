@@ -3,7 +3,6 @@ package com.example.coursach.security.utils;
 import com.example.coursach.config.properties.JwtProperties;
 import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.repository.CourseUserRepository;
-import com.example.coursach.repository.UserRepository;
 import com.example.coursach.security.model.AuthorizedUser;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -49,10 +48,10 @@ public class JwtTokenProvider {
         List<String> list = new ArrayList<>();
         userDetails.getAuthorities().forEach(u -> list.add(u.getAuthority()));
 
-        if (courseUserRepository.existsById_UserIdAndAndRole_Name(userDetails.getUuid(), UserRole.LECTURER)) {
+        if (courseUserRepository.existsById_UserIdAndRole_Name(userDetails.getUuid(), UserRole.LECTURER)) {
             list.add("ROLE_"+ UserRole.LECTURER);
         }
-        if (courseUserRepository.existsById_UserIdAndAndRole_Name(userDetails.getUuid(), UserRole.STUDENT)) {
+        if (courseUserRepository.existsById_UserIdAndRole_Name(userDetails.getUuid(), UserRole.STUDENT)) {
             list.add("ROLE_"+ UserRole.STUDENT);
         }
 

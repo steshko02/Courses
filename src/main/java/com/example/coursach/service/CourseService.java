@@ -155,7 +155,7 @@ public class CourseService {
         User user = userRepository.findById(uuid).orElseThrow(RuntimeException::new);
 
         List<CourseUser> byId_userId = Optional.ofNullable(
-                        courseUserRepository.findById_UserIdAndAndRole_Name(uuid, role))
+                        courseUserRepository.findById_UserIdAndRole_Name(uuid, role))
                 .orElse(Lists.newArrayList());
 
         //переделать
@@ -192,7 +192,7 @@ public class CourseService {
     public PaginationCoursesWithMentorsDto getAllByStudent(Integer number, Integer size, String uuid) {
         User user = userRepository.findById(uuid).orElseThrow(RuntimeException::new);
         List<CourseUser> byId_userId = Optional.ofNullable(
-                        courseUserRepository.findById_UserIdAndAndRole_Name(uuid, UserRole.LECTURER))
+                        courseUserRepository.findById_UserIdAndRole_Name(uuid, UserRole.LECTURER))
                 .orElse(Lists.newArrayList());
 
         return null;

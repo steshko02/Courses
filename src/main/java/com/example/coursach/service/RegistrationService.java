@@ -8,6 +8,7 @@ import com.example.coursach.entity.Code;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.enums.AccountStatus;
 import com.example.coursach.entity.enums.UserRole;
+import com.example.coursach.exception.user.InvalidCodeException;
 import com.example.coursach.exception.user.UserAlreadyExistException;
 import com.example.coursach.exception.user.UserNotFoundException;
 import com.example.coursach.exception.user.WeakPasswordException;
@@ -131,6 +132,11 @@ public class RegistrationService {
 
         if (user.getAccountStatus() == AccountStatus.ACTIVE) {
             throw new UserAlreadyExistException(user.getEmail());
+        }
+
+        String code = user.getCode().getCode().toString();
+        if (!code.equals(registerConfirmDto.getCode())) {
+            throw new InvalidCodeException();
         }
 
         user = userConverter.updatePassword(registerConfirmDto, user, bCryptPasswordEncoder);

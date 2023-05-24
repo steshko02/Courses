@@ -12,6 +12,7 @@ import com.example.coursach.service.CourseService;
 import com.example.coursach.service.MinioStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,11 +35,13 @@ public class CoursesController {
     private final MinioStorageService minioStorageService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Long createCourse(@RequestBody CourseDto courseDto) {
        return courseService.createCourse(courseDto);
     }
 
     @PostMapping("/picture")
+    @PreAuthorize("hasRole('ADMIN')")
     public StatusDto uploadPicture(@RequestParam("file") MultipartFile picture, @RequestParam("courseId") Long id) {
         return  minioStorageService.uploadCourseObj(picture,id);
     }
@@ -74,11 +77,13 @@ public class CoursesController {
 
     @PutMapping
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void update(@RequestBody CourseDto courseDto) {
         courseService.update(courseDto);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable("id") Long id) {
          courseService.delete(id);
     }
