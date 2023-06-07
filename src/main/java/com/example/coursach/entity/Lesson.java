@@ -75,6 +75,9 @@ public class Lesson {
     @Column(name = "status", nullable = false)
     private TimeStatus status;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Resource> resources;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "lessons_mentors",

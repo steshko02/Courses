@@ -26,4 +26,5 @@ public class LessonDto {
     @JsonFormat(pattern = ZONE_DATE_TIME_PATTEN)
     private final ZonedDateTime dateStart;
     private final Integer order;
+    private final List<ResourceDto> resourceDtos;
 }

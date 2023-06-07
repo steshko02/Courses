@@ -53,7 +53,10 @@ public class ProfileService {
 
         Profile profile = profileRepository.findById(authorizedUserUuid).orElseThrow(ProfileNotFoundException::new);
 
+        String photoUrl = profile.getPhotoUrl();
+
         profile = profileConverter.toEntity(profileDto);
+        profile.setPhotoUrl(photoUrl);
         profile.setUserId(authorizedUserUuid);
 
         Optional<User> user = userRepository.findById(authorizedUserUuid);

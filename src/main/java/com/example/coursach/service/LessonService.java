@@ -19,6 +19,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +63,14 @@ public class LessonService {
                         lesson.setStart(entity.getStart());
                         lesson.setEnd(entity.getEnd());
                         lesson.setMentors(entity.getMentors());
+                        lesson.setResources(lessonDto.getResourceDtos().stream().map(
+                                resourceDto -> Resource.builder()
+                                        .id(resourceDto.getId())
+                                        .extension(resourceDto.getExtension())
+                                        .url(resourceDto.getUrl())
+                                        .filename(resourceDto.getFilename())
+                                        .build()
+                        ).collect(Collectors.toList()));
                         lessonRepository.save(lesson);
                     }
             );

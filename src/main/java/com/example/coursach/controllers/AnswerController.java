@@ -12,11 +12,17 @@ import com.example.coursach.service.WorkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.AccessDeniedException;
+
+import javax.validation.constraints.Size;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,12 +45,20 @@ public class AnswerController {
         return answerService.update(answerDto, authorizedUser.getUuid());
     }
 
+    @PostMapping("/upload-files/{answerId}")
+    public List<StatusDto> uploadFiles( @Size(max = 5, message = "Exceeded maximum file count") @RequestPart("file") MultipartFile[] files,
+                                                       @PathVariable Long answerId,
+                                                       @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return Arrays.stream(files).map(file -> minioStorageService.uploadAnswerObj(file, authorizedUser.getUuid(), answerId)).collect(Collectors.toList());
+    }
+
+
     @PostMapping("/upload/{answerId}")
     @PreAuthorize("hasRole('USER')")
     public StatusDto uploadFile(@RequestParam("file") MultipartFile picture,
                                 @PathVariable Long answerId,
                                 @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        return minioStorageService.uploadAnswerObj(picture,authorizedUser.getUuid(),answerId);
+        return minioStorageService.uploadAnswerObj(picture, authorizedUser.getUuid(), answerId);
     }
 
     @GetMapping("byLesson/{id}")

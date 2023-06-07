@@ -66,6 +66,11 @@ public class Extractors {
         return String.format(Patterns.PHOTO_FORMAT_PATTERN, itemUuid, format);
     }
 
+    public String extractFileName(MultipartFile multipartFile, String itemUuid) {
+        String format = extractPictureFormat(multipartFile.getOriginalFilename());
+        return String.format(Patterns.PHOTO_FORMAT_PATTERN, itemUuid, format);
+    }
+
     /**
      * @param filename filename from Multipart (ex.: file.format)
      * @return format (from example upper)

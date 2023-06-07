@@ -70,7 +70,7 @@ app:
       end-point: ${MINIO_URL:http://localhost:9000}
       access-key: "accesskey"
       secret-key: "secretkey"
-      maximum-file-size: "5120KB"
+      maximum-file-size: "100MB"
       connection-timeout: 10000
       request-timeout: 10000
     storage:

@@ -17,10 +17,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.Size;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import java.nio.file.AccessDeniedException;
 
@@ -42,6 +48,15 @@ public class LessonController {
     public LessonDtoWithMentors get(@PathVariable("id") Long id, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         return lessonService.getById(id,authorizedUser.getUuid());
     }
+
+    @PostMapping("/upload-files/{courseId}/{lessonId}")
+    public List<StatusDto> uploadFiles(@Size(max = 5, message = "Exceeded maximum file count") @RequestPart("file") MultipartFile[] files,
+                                       @PathVariable Long courseId,
+                                       @PathVariable Long lessonId,
+                                       @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return Arrays.stream(files).map(file -> minioStorageService.uploadLessonObj(file, courseId, lessonId)).collect(Collectors.toList());
+    }
+
 
     @PutMapping
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

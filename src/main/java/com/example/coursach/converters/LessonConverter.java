@@ -4,6 +4,7 @@ import com.example.coursach.dto.LessonDto;
 import com.example.coursach.dto.LessonDtoWithMentors;
 import com.example.coursach.dto.LessonInfoForMentorsDto;
 import com.example.coursach.dto.LessonShortInfoDto;
+import com.example.coursach.dto.ResourceDto;
 import com.example.coursach.dto.WorkDto;
 import com.example.coursach.dto.user.BaseUserInformationDto;
 import com.example.coursach.entity.Course;
@@ -68,6 +69,12 @@ public class LessonConverter {
                 .status(lesson.getStatus())
                 .dateEnd(lesson.getEnd().atZone(ZoneId.systemDefault()))
                 .dateStart(lesson.getStart().atZone(ZoneId.systemDefault()))
+                .resourceDtos(lesson.getResources().stream().map(r-> ResourceDto.builder()
+                        .filename(r.getFilename())
+                        .extension(r.getExtension())
+                        .url(r.getUrl())
+                        .id(r.getId())
+                        .build()).collect(Collectors.toList()))
                 .work(workDto.orElse(null))
                 .build();
     }

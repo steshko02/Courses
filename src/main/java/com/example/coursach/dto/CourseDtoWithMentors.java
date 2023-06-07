@@ -1,6 +1,7 @@
 package com.example.coursach.dto;
 
 import com.example.coursach.dto.user.BaseUserInformationDto;
+import com.example.coursach.entity.enums.BookingStatus;
 import com.example.coursach.entity.enums.CourseType;
 import com.example.coursach.entity.enums.TimeStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -41,5 +42,6 @@ public class CourseDtoWithMentors {
     private List<LessonShortInfoDto> lessons;
     private String studentId;
     private String mentorId;
+    private BookingStatus bookingStatus;
 
 }

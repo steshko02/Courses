@@ -4,9 +4,11 @@ import com.example.coursach.converters.CourseConverter;
 import com.example.coursach.dto.*;
 import com.example.coursach.dto.user.BaseUserInformationDto;
 import com.example.coursach.entity.*;
+import com.example.coursach.entity.enums.BookingStatus;
 import com.example.coursach.entity.enums.FilterBy;
 import com.example.coursach.entity.enums.TimeStatus;
 import com.example.coursach.entity.enums.UserRole;
+import com.example.coursach.repository.BookingRepository;
 import com.example.coursach.repository.CourseRepository;
 import com.example.coursach.repository.CourseUserRepository;
 import com.example.coursach.repository.RoleRepository;
@@ -35,6 +37,7 @@ public class CourseService {
     private final CourseUserRepository courseUserRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final BookingRepository bookingRepository;
 
     @Transactional(rollbackFor = RuntimeException.class)
     public Long createCourse(CourseDto courseDto) {
@@ -129,6 +132,13 @@ public class CourseService {
             courseDtoWithMentors.setStudentId(userUuid);
         else if(name.equals(UserRole.LECTURER))
             courseDtoWithMentors.setMentorId(userUuid);
+
+
+        Optional<Booking> byUser_idAndCourseId = bookingRepository.findByUser_IdAndCourseId(userUuid, course.getId());
+        byUser_idAndCourseId.ifPresent( b -> {
+            courseDtoWithMentors.setBookingStatus(b.getStatus());
+                }
+        );
 
         return courseDtoWithMentors;
     }

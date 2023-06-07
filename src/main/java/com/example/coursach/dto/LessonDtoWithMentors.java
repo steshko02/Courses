@@ -36,4 +36,5 @@ public class LessonDtoWithMentors {
     private String studentId;
     private String mentorId;
     private CheckWorkDto checkWork;
+    private List<ResourceDto> resourceDtos;
 }

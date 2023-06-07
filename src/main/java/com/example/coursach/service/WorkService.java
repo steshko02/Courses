@@ -4,6 +4,7 @@ import com.example.coursach.converters.WorkConverter;
 import com.example.coursach.dto.LessonDtoWithMentors;
 import com.example.coursach.dto.WorkDto;
 import com.example.coursach.entity.Lesson;
+import com.example.coursach.entity.Resource;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.Work;
 import com.example.coursach.entity.enums.UserRole;
@@ -17,6 +18,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +41,7 @@ public class WorkService {
                 && userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
             throw new AccessDeniedException("You has not permission for this operation");
         }
-        
+
         Work newEntity = workConverter.toEntity(workDto);
         if(lesson.getWork()==null){
              workRepository.save(newEntity);
@@ -53,8 +55,16 @@ public class WorkService {
             work.setDescription(newEntity.getDescription());
             work.setStatus(newEntity.getStatus());
             work.setTitle(newEntity.getTitle());
-            work.setResources(new ArrayList<>());
             workRepository.save(work);
+            work.setResources(workDto.getResource().stream().map(resourceDto ->
+                    Resource.builder()
+                            .id(resourceDto.getId())
+                            .url(resourceDto.getUrl())
+                            .filename(resourceDto.getFilename())
+                            .extension(resourceDto.getExtension())
+                            .filename(resourceDto.getFilename())
+                            .build()
+            ).collect(Collectors.toList()));
             return workRepository.save(work).getId();
         }
     }
@@ -76,6 +86,16 @@ public class WorkService {
 
         Work work = workConverter.toEntity(workDto);
         work.setId(workDto.getId());
+
+        work.setResources(workDto.getResource().stream().map(resourceDto ->
+                        Resource.builder()
+                                .id(resourceDto.getId())
+                                .url(resourceDto.getUrl())
+                                .filename(resourceDto.getFilename())
+                                .extension(resourceDto.getExtension())
+                                .filename(resourceDto.getFilename())
+                                .build()
+                ).collect(Collectors.toList()));
 
         workRepository.save(work);
     }

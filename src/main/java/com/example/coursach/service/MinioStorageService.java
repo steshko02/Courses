@@ -27,6 +27,7 @@ import com.example.coursach.storage.extractor.Extractors;
 import com.example.coursach.storage.pattern.Patterns;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.FilenameUtils;
@@ -58,23 +59,41 @@ public class MinioStorageService {
     private final ResourceRepository resourceRepository;
     private final WorkRepository workRepository;
     private final AnswerRepository answerRepository;
+    private final LessonRepository lessonRepository;
 
 
     public static final String MINIO_FOLDER_PATTERN_FOR_LESSON = "%s/%s/%s/%s"; // /courseid/lessonid/video/id
 
+    @Transactional(rollbackFor = Exception.class)
     public StatusDto uploadLessonObj(MultipartFile picture,Long courseId, Long id) {
+
+        Lesson byId = lessonRepository.findById(id).orElseThrow(RuntimeException::new);
+
 
         String pictureName = String.valueOf(id);
 
-        String finalFilename = Extractors.extractFileName(picture, pictureName+"-"+ UUID.randomUUID().toString(), new String[]{"docx"}); //todo
+        String finalFilename = Extractors.extractFileName(picture, pictureName+"-"+ UUID.randomUUID()); //todo
         File fileToUpload = Extractors.extractFileFromMultipart(picture, finalFilename,
                 minioProperties.getAvatarsDirectoryPath());
 
+        String documents = createFilePath(courseId, id, "documents", finalFilename);
         amazonS3Client.putObject(new PutObjectRequest("lesson",
-                createFilePath(courseId,id,"documents",finalFilename),
+                documents,
                 fileToUpload));
+        String extension = FilenameUtils.getExtension(picture.getOriginalFilename());
 
         fileToUpload.delete();
+
+        Optional.of(byId).ifPresent(x-> {
+                    x.getResources().add(Resource.builder()
+                            .extension(extension)
+                            .filename(picture.getOriginalFilename())
+                            .url(getObjectUrl("lesson", documents, ""))
+                            .type(ResourceType.DOCUMENT)
+                            .build());
+                    lessonRepository.save(x);
+                }
+        );
 
         return StatusDto.builder()
                 .pictureId(pictureName)
@@ -83,13 +102,14 @@ public class MinioStorageService {
                 .build();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public StatusDto uploadAnswerObj(MultipartFile picture, String userUuid, Long answerId) {
 
         Answer byId = answerRepository.findById(answerId).orElseThrow(RuntimeException::new);
         
         String filenameDoc = String.valueOf(byId.getId());
 
-        String finalFilename = Extractors.extractFileName(picture, filenameDoc+"-"+ UUID.randomUUID(), new String[]{"docx"}); //todo
+        String finalFilename = Extractors.extractFileName(picture, filenameDoc+"-"+ UUID.randomUUID()); //todo
         File fileToUpload = Extractors.extractFileFromMultipart(picture, finalFilename,
                 minioProperties.getAvatarsDirectoryPath());
 
@@ -113,7 +133,6 @@ public class MinioStorageService {
                 }
         );
 
-        fileToUpload.delete();
 
         return StatusDto.builder()
                 .pictureId(filenameDoc)
@@ -122,11 +141,12 @@ public class MinioStorageService {
                 .build();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public StatusDto uploadWorkObj(MultipartFile picture,Long courseId, Long lessonId, Long workId) {
 
         String pictureName = String.valueOf(workId);
 
-        String finalFilename = Extractors.extractFileName(picture, pictureName+"-"+ UUID.randomUUID(), new String[]{"docx"}); //todo
+        String finalFilename = Extractors.extractFileName(picture, pictureName+"-"+ UUID.randomUUID()); //todo
         File fileToUpload = Extractors.extractFileFromMultipart(picture, finalFilename,
                 minioProperties.getAvatarsDirectoryPath());
 
@@ -175,7 +195,10 @@ public class MinioStorageService {
         File fileToUpload = Extractors.extractFileFromMultipart(photoToUpload, finalFilename,
                 minioProperties.getAvatarsDirectoryPath());
 
-        Profile profile = profileRepository.findById(userUuid).orElseThrow(ProfileNotFoundException::new);
+        Profile profile = profileRepository.findById(userUuid).orElse(
+                Profile.builder().build()
+        );
+
         Optional<String> pictureFormat = Optional.ofNullable(profile.getPictureFormat());
 
         pictureFormat.ifPresent(p -> amazonS3Client
@@ -186,9 +209,11 @@ public class MinioStorageService {
                 finalFilename, fileToUpload));
 
         profile.setPhotoUrl(getObjectUrl(minioProperties.getUserAvatarsBucket(), finalFilename, ""));
-        profileRepository.save(profile);
         User currentUser = userRepository.findUserByIdWithFetchProfile(userUuid)
                 .orElseThrow(UserNotFoundException::new);
+        profile.setUser(currentUser);
+        profileRepository.save(profile);
+        currentUser.setProfile(profile);
         currentUser.getProfile().setPictureFormat(Extractors.extractPictureFormat(photoToUpload.getOriginalFilename()));
         userRepository.save(currentUser);
 
