@@ -1,12 +1,16 @@
 package com.example.coursach.dto;
 
 import com.example.coursach.entity.enums.TimeStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
+
+import static com.example.coursach.config.DateTimeFormat.ZONE_DATE_TIME_PATTEN;
 
 @Getter
 @Builder
@@ -17,5 +21,6 @@ public class AnswerDto {
     private final Long workId;
     private  final List<ResourceDto> resource;
     private final TimeStatus timeStatus;
-    private final LocalDateTime date;
+    @JsonFormat(pattern = ZONE_DATE_TIME_PATTEN)
+    private final ZonedDateTime date;
 }

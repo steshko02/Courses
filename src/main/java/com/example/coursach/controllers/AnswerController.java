@@ -46,12 +46,12 @@ public class AnswerController {
     }
 
     @PostMapping("/upload-files/{answerId}")
+    @PreAuthorize("hasRole('USER')")
     public List<StatusDto> uploadFiles( @Size(max = 5, message = "Exceeded maximum file count") @RequestPart("file") MultipartFile[] files,
                                                        @PathVariable Long answerId,
                                                        @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         return Arrays.stream(files).map(file -> minioStorageService.uploadAnswerObj(file, authorizedUser.getUuid(), answerId)).collect(Collectors.toList());
     }
-
 
     @PostMapping("/upload/{answerId}")
     @PreAuthorize("hasRole('USER')")
@@ -69,7 +69,7 @@ public class AnswerController {
                                       @PathVariable("id") Long id,
                                       @RequestParam("user") String user,
                                       @RequestParam("status") String status,
-             @AuthenticationPrincipal AuthorizedUser authorizedUser) throws AccessDeniedException {
+                                      @AuthenticationPrincipal AuthorizedUser authorizedUser) throws AccessDeniedException {
         return answerService.getByLesson(number,size,id, user, status,authorizedUser.getUuid());
     }
 }

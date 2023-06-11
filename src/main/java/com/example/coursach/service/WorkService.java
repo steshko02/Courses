@@ -56,21 +56,22 @@ public class WorkService {
             work.setStatus(newEntity.getStatus());
             work.setTitle(newEntity.getTitle());
             workRepository.save(work);
-            work.setResources(workDto.getResource().stream().map(resourceDto ->
-                    Resource.builder()
-                            .id(resourceDto.getId())
-                            .url(resourceDto.getUrl())
-                            .filename(resourceDto.getFilename())
-                            .extension(resourceDto.getExtension())
-                            .filename(resourceDto.getFilename())
-                            .build()
-            ).collect(Collectors.toList()));
+            if(workDto.getResource()!=null) {
+                work.setResources(workDto.getResource().stream().map(resourceDto ->
+                        Resource.builder()
+                                .id(resourceDto.getId())
+                                .url(resourceDto.getUrl())
+                                .filename(resourceDto.getFilename())
+                                .extension(resourceDto.getExtension())
+                                .filename(resourceDto.getFilename())
+                                .build()
+                ).collect(Collectors.toList()));
+            }
             return workRepository.save(work).getId();
         }
     }
 
     public void deleteWork(Long id, String uuid) {
-
         workRepository.deleteById(id);
     }
 

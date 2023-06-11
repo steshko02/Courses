@@ -56,7 +56,7 @@ public class Course {
     @Column(name = "size")
     private Integer size;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Resource resources;
 
     @Convert(converter = LocalDateTimeConverter.class)

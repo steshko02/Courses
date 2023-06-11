@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class AnswerService {
     public PaginationAnswerDto getByLesson(Integer number, Integer size, Long id, String user, String status, String uuid) throws AccessDeniedException {
         //сделать проверку на ментора
         Lesson lesson = lessonRepository.findById(id).orElseThrow(RuntimeException::new);
-        if(userService.getByRoleAndLessonOnCourse(uuid,lesson.getId(), UserRole.LECTURER).isEmpty()){
+        if(userService.getByRoleAndLessonOnCourse(uuid,lesson.getId(), UserRole.STUDENT).isEmpty()){
             throw new AccessDeniedException("You has not permission for this operation");
         }
 
@@ -92,7 +93,7 @@ public class AnswerService {
                         Collectors.toMap(c->c.getAnswer().getId(), Function.identity()));
 
         List<AnswerWithUserDto> collect = answers.stream().map(a -> AnswerWithUserDto.builder()
-                .date(a.getDateCreation())
+                .date(a.getDateCreation().atZone(ZoneId.systemDefault()))
                 .timeStatus(a.getStatus())
                 .result(Optional.ofNullable(checkWorkMap.get(a.getId())).map(checkWorkConvertor::toDto).orElse(null))
                 .resource(a.getResources().stream().map(r -> ResourceDto.builder()
@@ -122,7 +123,7 @@ public class AnswerService {
         Work work = workRepository.findById(answerDto.getWorkId()).orElseThrow(RuntimeException::new);
 
         //чекать на то что юзер - ученик на курсе
-        if(userService.getByRoleAndLessonOnCourse(uuid,work.getLesson().getId(), UserRole.LECTURER).isEmpty()){
+        if(userService.getByRoleAndLessonOnCourse(uuid,work.getLesson().getId(), UserRole.STUDENT).isEmpty()){
             throw new AccessDeniedException("You has not permission for this operation");
         }
 
@@ -131,6 +132,14 @@ public class AnswerService {
                 .comment(answerDto.getComment())
                 .user(user)
                 .work(work)
+                .resources(answerDto.getResource().stream().map(
+                        resourceDto -> Resource.builder()
+                                .id(resourceDto.getId())
+                                .extension(resourceDto.getExtension())
+                                .url(resourceDto.getUrl())
+                                .filename(resourceDto.getFilename())
+                                .build()
+                ).collect(Collectors.toList()))
                 .status(checkTime(work.getDeadline()))
                 .dateCreation(LocalDateTime.now())
                 .build();

@@ -328,7 +328,7 @@ public class MinioStorageService {
 
     public StatusDto uploadCourseObj(MultipartFile picture, Long id) {
 
-        String pictureName = String.valueOf(id);
+        String pictureName = String.valueOf(id) + UUID.randomUUID();
         String finalFilename = Extractors.extractFileName(picture, pictureName, minioProperties.getAllowedPhotoFormats());
         File fileToUpload = Extractors.extractFileFromMultipart(picture, finalFilename,
                 minioProperties.getAvatarsDirectoryPath());
@@ -341,16 +341,25 @@ public class MinioStorageService {
 
         fileToUpload.delete();
 
+        Course course = courseRepository.findById(id).get();
+        Resource oldRes =  course.getResources();
+        if(oldRes == null) {
         Resource resource = Resource.builder()
+                .id(course.getId())
                 .extension(extension)
                 .filename(pictureName)
                 .url(coursePictureInfo.getUrl())
                 .type(ResourceType.PICTURE)
                 .build();
+            course.setResources(resource);
+            courseRepository.save(course);
+        }else {
+            oldRes.setFilename(pictureName);
+            oldRes.setUrl(coursePictureInfo.getUrl());
+            oldRes.setExtension(extension);
+            resourceRepository.save(oldRes);
+        }
 
-        Course course = courseRepository.findById(id).get();
-        course.setResources(resource);
-        courseRepository.save(course);
         return StatusDto.builder()
                 .pictureId(pictureName)
                 .timestamp(LocalDateTime.now(systemClock).toString())

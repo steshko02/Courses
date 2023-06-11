@@ -84,7 +84,7 @@ public class CoursesController {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
     public void update(@RequestBody CourseDto courseDto) {
-        courseService.update(courseDto);
+        courseService.updateCourse(courseDto);
     }
 
     @DeleteMapping("/{id}")

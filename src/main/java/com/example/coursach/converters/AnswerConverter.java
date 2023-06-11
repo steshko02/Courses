@@ -28,7 +28,7 @@ public class AnswerConverter {
                 .id(answer.getId())
                 .comment(answer.getComment())
                 .timeStatus(answer.getStatus())
-                .date(answer.getDateCreation())
+                .date(answer.getDateCreation().atZone(ZoneId.systemDefault()))
                 .resource(answer.getResources().stream().map(r-> ResourceDto.builder()
                         .filename(r.getFilename())
                         .extension(r.getExtension())

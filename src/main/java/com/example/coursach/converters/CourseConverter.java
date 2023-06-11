@@ -94,7 +94,7 @@ public class CourseConverter {
                 .description(course.getDescription())
                 .title(course.getTitle())
                 .status(course.getStatus())
-                .busy(course.getCount())
+                .busy(Optional.ofNullable(course.getCount()).orElse(0))
                 .dateEnd(course.getEnd().atZone(ZoneId.systemDefault()))
                 .dateStart(course.getStart().atZone(ZoneId.systemDefault()))
                 .lessons(lessons.stream()
