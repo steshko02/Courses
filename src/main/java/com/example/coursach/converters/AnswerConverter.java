@@ -1,12 +1,8 @@
 package com.example.coursach.converters;
 
 import com.example.coursach.dto.AnswerDto;
-import com.example.coursach.dto.BookingDto;
 import com.example.coursach.dto.ResourceDto;
 import com.example.coursach.entity.Answer;
-import com.example.coursach.entity.Booking;
-import com.example.coursach.entity.Course;
-import com.example.coursach.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneId;

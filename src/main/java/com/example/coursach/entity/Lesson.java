@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.compress.utils.Lists;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -60,8 +61,7 @@ public class Lesson {
     @Column(name = "date_end", nullable = true)
     private LocalDateTime end;
 
-    @JoinColumn(name = "work_id")
-    @OneToOne(fetch = FetchType.LAZY,
+    @OneToOne(fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             mappedBy = "lesson")

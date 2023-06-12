@@ -1,6 +1,7 @@
 package com.example.coursach.entity;
 
 import com.example.coursach.entity.converters.CourseStatusConverter;
+import com.example.coursach.entity.converters.CourseStatusDeletedConverter;
 import com.example.coursach.entity.converters.CourseTypeConverter;
 import com.example.coursach.entity.converters.LocalDateTimeConverter;
 import com.example.coursach.entity.enums.TimeStatus;
@@ -69,4 +70,11 @@ public class Course {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = CascadeType.ALL)
     private List<Lesson> lessons;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
+
+//    @Convert(converter = CourseStatusDeletedConverter.class)
+//    @Column(name = "course_status", nullable = false)
+//    private CourseStatus courseStatus;
 }

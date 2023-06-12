@@ -28,7 +28,8 @@ public class CheckWork {
     @Column(name = "mark")
     private Integer mark;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "answer_id")
+    @OneToOne(cascade = CascadeType.ALL)
     private Answer answer;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

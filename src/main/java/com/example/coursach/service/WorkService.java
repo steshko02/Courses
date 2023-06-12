@@ -1,7 +1,6 @@
 package com.example.coursach.service;
 
 import com.example.coursach.converters.WorkConverter;
-import com.example.coursach.dto.LessonDtoWithMentors;
 import com.example.coursach.dto.WorkDto;
 import com.example.coursach.entity.Lesson;
 import com.example.coursach.entity.Resource;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

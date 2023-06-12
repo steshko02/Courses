@@ -17,6 +17,9 @@ public enum FilterBy {
     NOT_STARTED,
     DURING,
     FINISHED,
-    DELETED
+    DELETED,
+    FOR_USER,
+    FOR_MENTOR,
+
 }
 

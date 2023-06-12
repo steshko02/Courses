@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
@@ -54,12 +55,15 @@ public class Work {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Resource> resources;
 
-    @OneToOne (cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "lesson_id")
+    @OneToOne (cascade = CascadeType.ALL)
     private Lesson lesson;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "work", cascade = CascadeType.ALL)
+    private List<Answer> answers;
 
     @PreRemove
     public void remove(){
         lesson.setWork(null);
     }
-
 }

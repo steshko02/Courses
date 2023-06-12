@@ -63,7 +63,6 @@ public class AnswerController {
 
     @GetMapping("byLesson/{id}")
     @ResponseBody
-    @PreAuthorize("hasRole('USER')")
     public PaginationAnswerDto getAll(@RequestParam("number") Integer number,
                                       @RequestParam("size") Integer size,
                                       @PathVariable("id") Long id,

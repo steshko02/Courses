@@ -71,6 +71,11 @@ public class CourseService {
 
         List<String> ids = courseDto.getIds();
         if (ids != null && !ids.isEmpty()) {
+
+            List<CourseUser> byId_courseId =
+                    courseUserRepository.findById_CourseIdAndAndRole_Name(course.getId(),UserRole.LECTURER);
+            courseUserRepository.deleteAll(byId_courseId);
+
             ids.forEach(u -> {
 
                 UserCourseId courseId = UserCourseId.builder()
@@ -151,7 +156,9 @@ public class CourseService {
 
     public void delete(Long id) {
         courseRepository.deleteById(id);
-    }
+        List<CourseUser> byId_courseId = courseUserRepository.findById_CourseId(id);
+        courseUserRepository.deleteAll(byId_courseId);
+}
 
     public PaginationCoursesDto getAllWithPagination(Integer number, Integer size) {
 
@@ -170,7 +177,7 @@ public class CourseService {
         courseRepository.updateCourseByTime(now);
     }
 
-    public PaginationCoursesDto getAllWithPaginationWithFiltering(Integer number, Integer size, FilterBy filter) {
+    public PaginationCoursesDto getAllWithPaginationWithFiltering(Integer number, Integer size, FilterBy filter, String userId) {
 
         Page<Course> coursePage = null;
 
@@ -179,7 +186,8 @@ public class CourseService {
             case DURING -> coursePage = courseRepository.findByStatus(PageRequest.of(number, size), TimeStatus.DURING);
             case NOT_STARTED -> coursePage = courseRepository.findByStatus(PageRequest.of(number, size), TimeStatus.NOT_STARTED);
             case FINISHED -> coursePage = courseRepository.findByStatus(PageRequest.of(number, size), TimeStatus.FINISHED);
-//            case DELETED -> coursePage = courseRepository.findAllByStatus(PageRequest.of(number, size), TimeStatus.NOT_STARTED);
+            case  FOR_USER -> coursePage = getCourseByUserRole(userId,PageRequest.of(number, size), UserRole.STUDENT);
+            case  FOR_MENTOR -> coursePage = getCourseByUserRole(userId,PageRequest.of(number, size), UserRole.LECTURER);
             default -> coursePage = courseRepository.findAll(PageRequest.of(number, size));
         }
         return PaginationCoursesDto.builder()
@@ -190,6 +198,18 @@ public class CourseService {
                 .totalPages(coursePage.getTotalPages())
                 .build();
 
+    }
+
+    private Page<Course> getCourseByUserRole(String userId, PageRequest of, UserRole role) {
+        User user = userRepository.findById(userId).orElseThrow(RuntimeException::new);
+
+        List<CourseUser> byId_userId = Optional.ofNullable(
+                        courseUserRepository.findById_UserIdAndRole_Name(userId, role))
+                .orElse(Lists.newArrayList());
+
+        List<Long> collect = byId_userId.stream().map(uc -> uc.getId().getCourseId()).collect(Collectors.toList());
+
+        return courseRepository.findByIdIn(collect,of);
     }
 
     public PaginationCoursesWithMentorsDto getAllByRole(Integer number, Integer size, String uuid, UserRole role) {

@@ -40,11 +40,6 @@ public class CoursesController {
        return courseService.createCourse(courseDto);
     }
 
-//    @PutMapping
-//    public Long update2(@RequestBody CourseDto courseDto) {
-//       return courseService.updateCourse(courseDto);
-//    }
-
     @PostMapping("/picture")
     @PreAuthorize("hasRole('ADMIN')")
     public StatusDto uploadPicture(@RequestParam("file") MultipartFile picture, @RequestParam("courseId") Long id) {
@@ -76,8 +71,9 @@ public class CoursesController {
     @ResponseBody
     public PaginationCoursesDto getByFiltering(@RequestParam("number") Integer number,
                                     @RequestParam("size") Integer size,
-                                    @PathVariable("filter") String filter) {
-        return courseService.getAllWithPaginationWithFiltering(number,size,FilterBy.valueOf(filter));
+                                    @PathVariable("filter") String filter,
+                                    @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+        return courseService.getAllWithPaginationWithFiltering(number,size,FilterBy.valueOf(filter),authorizedUser.getUuid());
     }
 
     @PutMapping

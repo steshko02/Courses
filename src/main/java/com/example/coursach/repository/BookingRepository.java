@@ -20,6 +20,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
     Optional<Booking> findByUser_IdAndCourseId(String userId, Long courseId);
 
     Page<Booking> findAllByStatus(BookingStatus status, PageRequest of);
+    void deleteAllByCourse_Id(Long id);
+
 
 //    Page<Booking> findAll(Specification<Booking> createBookingSpecification, Pageable pageable);
 }

@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -45,10 +46,11 @@ public class Answer {
     @Column(name = "status", nullable = false)
     private TimeStatus status;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resource> resources;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "work_id")
+    @ManyToOne( fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Work work;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -57,4 +59,12 @@ public class Answer {
     @Convert(converter = LocalDateTimeConverter.class)
     @Column(name = "date_creation") 
     private LocalDateTime dateCreation;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "answer")
+    private CheckWork checkWork;
+
+    @PreRemove
+    public void remove(){
+        this.setWork(null);
+    }
 }

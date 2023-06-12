@@ -14,6 +14,7 @@ import com.example.coursach.repository.*;
 import com.example.coursach.service.converter.UserConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -137,11 +138,12 @@ public class LessonService {
         lessonRepository.save(newLesson);
     }
 
+    @Transactional
     public Long deleteById(Long id, String uuid) throws AccessDeniedException {
 
         Optional<User> userById = userRepository.findUserById(uuid);
         if(userService.getByRoleAndLessonOnCourse(uuid,id,UserRole.LECTURER).isEmpty()
-                && userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
+                || userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
             throw new AccessDeniedException("You has not permission for this operation");
         }
         lessonRepository.deleteById(id);

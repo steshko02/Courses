@@ -16,6 +16,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -67,10 +68,11 @@ public class AnswerService {
         return TimeStatus.FINISHED;
     }
 
+    @Transactional
     public PaginationAnswerDto getByLesson(Integer number, Integer size, Long id, String user, String status, String uuid) throws AccessDeniedException {
         //сделать проверку на ментора
         Lesson lesson = lessonRepository.findById(id).orElseThrow(RuntimeException::new);
-        if(userService.getByRoleAndLessonOnCourse(uuid,lesson.getId(), UserRole.STUDENT).isEmpty()){
+        if(userService.getByRoleAndLessonOnCourse(uuid,lesson.getId(), UserRole.LECTURER).isEmpty()){
             throw new AccessDeniedException("You has not permission for this operation");
         }
 
@@ -92,7 +94,8 @@ public class AnswerService {
                 .stream().collect(
                         Collectors.toMap(c->c.getAnswer().getId(), Function.identity()));
 
-        List<AnswerWithUserDto> collect = answers.stream().map(a -> AnswerWithUserDto.builder()
+        List<AnswerWithUserDto> collect = answers.stream().map(a -> {
+            return AnswerWithUserDto.builder()
                 .date(a.getDateCreation().atZone(ZoneId.systemDefault()))
                 .timeStatus(a.getStatus())
                 .result(Optional.ofNullable(checkWorkMap.get(a.getId())).map(checkWorkConvertor::toDto).orElse(null))
@@ -107,7 +110,8 @@ public class AnswerService {
                 .user(userConverter.userToBaseUserInformationDto(a.getUser()))
                 .workTitle(lesson.getWork().getTitle())
                 .id(a.getId())
-                .build()
+                .build();
+        }
         ).toList();
 
         return PaginationAnswerDto.builder()
