@@ -12,6 +12,7 @@ import com.example.coursach.entity.CourseUser;
 import com.example.coursach.entity.User;
 import com.example.coursach.entity.UserCourseId;
 import com.example.coursach.entity.enums.BookingStatus;
+import com.example.coursach.entity.enums.TimeStatus;
 import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.repository.BookingRepository;
 import com.example.coursach.repository.CourseRepository;
@@ -62,16 +63,19 @@ public class BookingService {
                     Course course = courseRepository.findById(courseId)
                             .orElseThrow(RuntimeException::new);
 
-                    User user = userRepository.findById(userId)
-                            .orElseThrow(RuntimeException::new);
+                    if( course.getCount()== null || course.getCount() < course.getSize() && course.getStatus().equals(TimeStatus.NOT_STARTED)) {
+                        User user = userRepository.findById(userId)
+                                .orElseThrow(RuntimeException::new);
 
-                    Booking booking = Booking.builder()
-                            .dateCreation(LocalDateTime.now())
-                            .status(BookingStatus.CONSIDERED)
-                            .user(user)
-                            .course(course)
-                            .build();
-                    return bookingRepository.save(booking).getId();
+                        Booking booking = Booking.builder()
+                                .dateCreation(LocalDateTime.now())
+                                .status(BookingStatus.CONSIDERED)
+                                .user(user)
+                                .course(course)
+                                .build();
+                        return bookingRepository.save(booking).getId();
+                    }
+                    throw new RuntimeException("You cannot registration on this course.");
                 }
         );
     }
@@ -93,32 +97,36 @@ public class BookingService {
         User user = booking.getUser();
         Course course = booking.getCourse();
 
-        CourseUser courseUser = CourseUser.builder()
-                .id(UserCourseId.builder().courseId(course.getId()).userId(user.getId()).build())
-                .role(roleRepository.findByName(UserRole.STUDENT))
-                .build();
+        if(course.getStatus().equals(TimeStatus.NOT_STARTED) && course.getCount()==null || course.getCount()<course.getSize()) {
+            CourseUser courseUser = CourseUser.builder()
+                    .id(UserCourseId.builder().courseId(course.getId()).userId(user.getId()).build())
+                    .role(roleRepository.findByName(UserRole.STUDENT))
+                    .build();
 
-        courseUserRepository.save(courseUser);
-        booking.setStatus(BookingStatus.APPROWED);
-        bookingRepository.save(booking);
-        Integer count = course.getCount();
-        course.setCount(count == null ? 1 : count + 1);
-        courseRepository.save(course);
+            courseUserRepository.save(courseUser);
+            booking.setStatus(BookingStatus.APPROWED);
+            bookingRepository.save(booking);
+            Integer count = course.getCount();
+            course.setCount(count == null ? 1 : count + 1);
+            courseRepository.save(course);
 
-        String language = currentUserRequestLocaleService.getCurrentLocale().getLanguage();
+            String language = currentUserRequestLocaleService.getCurrentLocale().getLanguage();
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY hh:mm");
-        String dateString=simpleDateFormat.format(java.sql.Timestamp.valueOf(course.getStart()));
-        postman.send(
-                Notification.buildBookingNotification(
-                        currentUserRequestLocaleService.getCurrentLocale(),
-                        MailScope.BOOKING,
-                        user.getEmail(),
-                        course.getTitle(),
-                        user.getFirstname()+" "+user.getLastname(),
-                        "одобрена",
-                        "Данный курс стартует " + dateString)
-        );
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY hh:mm");
+            String dateString = simpleDateFormat.format(java.sql.Timestamp.valueOf(course.getStart()));
+            postman.send(
+                    Notification.buildBookingNotification(
+                            currentUserRequestLocaleService.getCurrentLocale(),
+                            MailScope.BOOKING,
+                            user.getEmail(),
+                            course.getTitle(),
+                            user.getFirstname() + " " + user.getLastname(),
+                            "одобрена",
+                            "Данный курс стартует " + dateString)
+            );
+        } else {
+            throw new RuntimeException("Невозможно записаться на курс");
+        }
     }
 
     public PaginationBookingDto getAllWithPagination(Integer number, Integer size, BookingStatus status, String user, String courseStr) {

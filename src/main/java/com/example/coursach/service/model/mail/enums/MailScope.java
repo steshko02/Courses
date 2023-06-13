@@ -15,7 +15,10 @@ public enum MailScope {
 
     REMINDING("reminding-{locale}"),
 
-    BOOKING("booking-{locale}");
+    BOOKING("booking-{locale}"),
+
+    LESSON_START("lesson-{locale}"),
+    COURSE_START("course-{locale}");
 
 
     private final String templateLocation;

@@ -63,5 +63,17 @@ public abstract class Notification {
     }
 
 
+    public static LessonNotification buildLessonNotification(MessageLocale localisation,
+                                                               MailScope mailScope,
+                                                               String consumerEmail,
+                                                               String courseTitle,
+                                                               String receiverFullName,
+                                                               String lessonTitle,
+                                                               String date) {
+        return new LessonNotification(localisation, mailScope, consumerEmail, courseTitle, receiverFullName,lessonTitle, date);
+    }
 
+    public static Notification buildCourseNotification(MessageLocale currentLocale, MailScope courseStart, String email, String title,String user, String dateString) {
+        return new CourseNotification(currentLocale, courseStart, email, title, user, dateString);
+    }
 }

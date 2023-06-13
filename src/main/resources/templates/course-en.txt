@@ -1,0 +1,5 @@
+Уважаемый {user_name}, курс {course_info} начнётся {date}.
+
+Желаем приятного изучения!
+
+Kоманда SenlaCourses!

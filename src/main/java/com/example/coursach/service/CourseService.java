@@ -14,6 +14,8 @@ import com.example.coursach.repository.CourseUserRepository;
 import com.example.coursach.repository.RoleRepository;
 import com.example.coursach.repository.UserRepository;
 import com.example.coursach.service.converter.UserConverter;
+import com.example.coursach.service.model.mail.Notification;
+import com.example.coursach.service.model.mail.enums.MailScope;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,8 @@ public class CourseService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BookingRepository bookingRepository;
+    private final EmailSenderService postman;
+    private final CurrentUserRequestLocaleService currentUserRequestLocaleService;
 
     @Transactional(rollbackFor = RuntimeException.class)
     public Long createCourse(CourseDto courseDto) {
@@ -239,7 +244,6 @@ public class CourseService {
                         .map(us -> userRepository.findAllByIds(us.stream().map(u -> u.getId().getUserId()).collect(Collectors.toList())))
                         .orElse(Lists.newArrayList())));
 
-
         List<CourseDtoForMentors> courseDtoForMentors = courseConverter
                 .toDtosForMentors(byAllById.get().collect(Collectors.toList()),collect);
 
@@ -258,5 +262,30 @@ public class CourseService {
                 .orElse(Lists.newArrayList());
 
         return null;
+    }
+
+    public void checkAndSendMessages() {
+
+        List<Course> byStartBetween = courseRepository.findByStartBetween(LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+
+        byStartBetween.forEach(course -> {
+            courseUserRepository.findById_CourseId(course.getId())
+                    .forEach(uc -> sendMessage(userRepository.findById(uc.getId().getUserId()).get(),course));
+        });
+    }
+
+    public void sendMessage(User user, Course course) {
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY hh:mm");
+        String dateString = simpleDateFormat.format(java.sql.Timestamp.valueOf(course.getStart()));
+        postman.send(
+                Notification.buildCourseNotification(
+                        currentUserRequestLocaleService.getCurrentLocale(),
+                        MailScope.COURSE_START,
+                        user.getEmail(),
+                        course.getTitle(),
+                        user.getFirstname() + " " + user.getLastname(),
+                        dateString)
+        );
     }
 }

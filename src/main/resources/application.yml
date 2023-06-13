@@ -94,3 +94,6 @@ app:
     month-age: 6
 status:
   cron: "0 */10 * * * *"
+send:
+  cron: "0 * * */1 * *"
+

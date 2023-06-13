@@ -27,4 +27,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Page<Course> findByStatus(PageRequest of, TimeStatus status);
 
     Page<Course> findByIdIn(List<Long> ids, PageRequest of);
+
+    List<Course> findByStartBetween(LocalDateTime now, LocalDateTime plusDays);
 }

@@ -12,11 +12,14 @@ import com.example.coursach.entity.*;
 import com.example.coursach.entity.enums.UserRole;
 import com.example.coursach.repository.*;
 import com.example.coursach.service.converter.UserConverter;
+import com.example.coursach.service.model.mail.Notification;
+import com.example.coursach.service.model.mail.enums.MailScope;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,14 +41,16 @@ public class LessonService {
     private final CheckWorkRepository checkWorkRepository;
     private final CheckWorkConvertor checkWorkConvertor;
     private final UserService userService;
+    private final EmailSenderService postman;
+    private final CurrentUserRequestLocaleService currentUserRequestLocaleService;
 
 
     public Long createLesson(LessonDto lessonDto, String uuid) throws AccessDeniedException {
 
         Optional<User> userById = userRepository.findUserById(uuid);
 
-        if(userService.getByRoleOnCourse(uuid,lessonDto.getCourseId(),UserRole.LECTURER).isEmpty()
-                && userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
+        if (userService.getByRoleOnCourse(uuid, lessonDto.getCourseId(), UserRole.LECTURER).isEmpty()
+                && userById.get().getRoles().stream().noneMatch(x -> x.getName().equals(UserRole.ADMIN))) {
             throw new AccessDeniedException("You has not permission for this operation");
         }
         Course course = courseRepository.findById(lessonDto.getCourseId())
@@ -122,11 +127,11 @@ public class LessonService {
 
     public void update(LessonDto lessonDto, String uuid) throws AccessDeniedException {
         Optional<User> userById = userRepository.findUserById(uuid);
-        if(userService.getByRoleOnCourse(uuid,lessonDto.getCourseId(),UserRole.LECTURER).isEmpty()
-                && userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
+        if (userService.getByRoleOnCourse(uuid, lessonDto.getCourseId(), UserRole.LECTURER).isEmpty()
+                && userById.get().getRoles().stream().noneMatch(x -> x.getName().equals(UserRole.ADMIN))) {
             throw new AccessDeniedException("You has not permission for this operation");
         }
-        
+
         Course course = courseRepository.findById(lessonDto.getCourseId())
                 .orElseThrow(RuntimeException::new);
 
@@ -142,8 +147,8 @@ public class LessonService {
     public Long deleteById(Long id, String uuid) throws AccessDeniedException {
 
         Optional<User> userById = userRepository.findUserById(uuid);
-        if(userService.getByRoleAndLessonOnCourse(uuid,id,UserRole.LECTURER).isEmpty()
-                || userById.get().getRoles().stream().noneMatch(x->x.getName().equals(UserRole.ADMIN))){
+        if (userService.getByRoleAndLessonOnCourse(uuid, id, UserRole.LECTURER).isEmpty()
+                || userById.get().getRoles().stream().noneMatch(x -> x.getName().equals(UserRole.ADMIN))) {
             throw new AccessDeniedException("You has not permission for this operation");
         }
         lessonRepository.deleteById(id);
@@ -153,5 +158,32 @@ public class LessonService {
     public void checkAndSwitchStatus() {
         LocalDateTime now = LocalDateTime.now();
         lessonRepository.updateLessonByTime(now);
+    }
+
+    public void checkAndSendMessages() {
+
+        List<Lesson> byStartBetween = lessonRepository.findByStartBetween(LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+
+        byStartBetween.forEach(lesson -> {
+            courseUserRepository.findById_CourseId(lesson.getCourse().getId())
+                    .forEach(uc -> sendMessage(userRepository.findById(uc.getId().getUserId()).get(),lesson));
+        });
+    }
+
+    public void sendMessage(User user, Lesson lesson) {
+
+        Course course = lesson.getCourse();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY hh:mm");
+        String dateString = simpleDateFormat.format(java.sql.Timestamp.valueOf(lesson.getStart()));
+        postman.send(
+                Notification.buildLessonNotification(
+                        currentUserRequestLocaleService.getCurrentLocale(),
+                        MailScope.LESSON_START,
+                        user.getEmail(),
+                        course.getTitle(),
+                        user.getFirstname() + " " + user.getLastname(),
+                        lesson.getTitle(),
+                        dateString)
+        );
     }
 }

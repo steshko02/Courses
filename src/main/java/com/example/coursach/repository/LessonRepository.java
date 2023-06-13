@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
@@ -15,5 +16,9 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             " when l.end <= ?1 then 2" +
             " else 0 end ")
     void updateLessonByTime(LocalDateTime time);
+
+    List<Lesson> findByStartBetween(LocalDateTime end, LocalDateTime start);
+    List<Lesson> findByEndAfter(LocalDateTime start);
+
 
 }
